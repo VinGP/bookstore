@@ -1,1 +1,0 @@
-{"dataValues":{"VULN_INFO_CL":"0"}}
