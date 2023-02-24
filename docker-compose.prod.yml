@@ -23,10 +23,10 @@ services:
     volumes:
       - static_volume:/home/app/static
       - media_volume:/home/app/media
-      - /etc/ssl:/ssl/
+      - /etc/ssl/:/etc/ssl/
     ports:
-      - 80:80
-      - 433:433
+      - "80:80"
+      - "433:433"
     depends_on:
       - web
 
