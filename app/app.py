@@ -30,11 +30,13 @@ def i():
 
 @app.route("/add/<email>")
 def add(email):
-    u = User(email=email)
-    # print(u)
-    db.session.add(u)
-    db.session.commit()
-    return jsonify({"email": u.email, "id": u.id, "active": u.active})
+    try:
+        u = User(email=email)
+        db.session.add(u)
+        db.session.commit()
+        return jsonify({"email": u.email, "id": u.id, "active": u.active})
+    except Exception as e:
+        print(e)
 
 
 @app.route("/get/<email>")

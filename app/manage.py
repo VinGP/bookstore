@@ -7,6 +7,7 @@ cli = FlaskGroup(app)
 
 @cli.command("create_db")
 def create_db():
+    # docker-compose exec web python manage.py create_db
     db.drop_all()
     db.create_all()
     db.session.commit()
