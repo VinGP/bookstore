@@ -23,8 +23,7 @@ services:
     volumes:
       - static_volume:/home/app/static
       - media_volume:/home/app/media
-      - /etc/ssl/vingp-bookstore.ru.crt:/ssl/cert.pem
-      - /etc/ssl/vingp-bookstore.ru.key:/ssl/key.pem
+      - /etc/ssl:/ssl/
     ports:
       - 80:80
       - 433:433
