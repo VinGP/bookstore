@@ -26,8 +26,8 @@ services:
       - media_volume:/home/app/media
       - /etc/ssl/:/etc/ssl/
     ports:
-      - "80:80"
-      - "433:433"
+      - 80:80
+#      - "433:433"
     depends_on:
       - web
 
