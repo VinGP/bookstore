@@ -1,10 +1,30 @@
 from config import Config
 from flask import Flask, jsonify
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 from models import Authors, Books, Publishers, db
 
 app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
+
+admin = Admin(app, name="microblog", template_mode="bootstrap3")
+
+
+class BooksView(ModelView):
+    column_display_pk = True  # optional, but I like to see the IDs in the list
+    column_hide_backrefs = True
+    column_list = ("id", "author_id")
+    form_columns = (
+        "id",
+        "title",
+        "author_id",
+    )
+
+
+admin.add_view(BooksView(Books, db.session))
+admin.add_view(ModelView(Publishers, db.session))
+admin.add_view(ModelView(Authors, db.session))
 
 
 @app.route("/")
