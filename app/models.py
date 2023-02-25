@@ -13,8 +13,10 @@ class Books(db.Model):
     available_quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Integer, nullable=False)
     author_id = db.Column(db.Integer, db.ForeignKey("authors.id"), nullable=False)
-    # publisher_id = db.Column(db.Integer, db.ForeignKey("publishers.id"), nullable=False)
-    # author_id = db.relationship("Authors", backref=db.backref("authors", uselist=False))
+    # publisher_id = db.Column(db.Integer, db.ForeignKey("publishers.id"),
+    # nullable=False)
+    # author_id = db.relationship("Authors",
+    # backref=db.backref("authors", uselist=False))
 
     # author = db.relationship("Authors", backref="books")
     # publisher = db.relationship("Publishers")
