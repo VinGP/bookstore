@@ -1,21 +1,10 @@
 from config import Config
 from flask import Flask, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from models import Authors, Books, Publishers, db
 
 app = Flask(__name__)
 app.config.from_object(Config)
-db = SQLAlchemy(app)
-
-
-class User(db.Model):
-    __tablename__ = "users"
-
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(128), unique=True, nullable=False)
-    active = db.Column(db.Boolean(), default=True, nullable=False)
-
-    def __init__(self, email):
-        self.email = email
+db.init_app(app)
 
 
 @app.route("/")
@@ -28,23 +17,32 @@ def i():
     return jsonify({"res": "i!!!"})
 
 
-@app.route("/add/<email>")
-def add(email):
+@app.route("/add/<n>")
+def add(n):
     try:
-        u = User(email=email)
-        db.session.add(u)
+        a = Authors(first_name="test", second_name="test")
+        db.session.add(a)
         db.session.commit()
-        return jsonify({"email": u.email, "id": u.id, "active": u.active})
+        at = {
+            "first_name": a.first_name,
+            "id": a.id,
+            "second_name": a.second_name,
+            "surname": a.surname,
+        }
+
+        p = Publishers("test")
+        db.session.add(p)
+        db.session.commit()
+        pb = {"id": p.id, "name": p.name}
+        b = Books("123423-1221-131-33", "test", 100, 2000, a.id, p.id)
+        db.session.add(b)
+        db.session.commit()
+        bk = {"p": b.publisher_id, "a": a.id, "t": b.title}
+        print(jsonify({"b": bk, "p": pb, "a": at}))
+        return jsonify({"b": bk, "p": pb, "a": at})
+
     except Exception as e:
-        print(e)
-
-
-@app.route("/get/<email>")
-def get(email):
-    users = User.query.all()
-    # print(users)
-    res = [{"email": u.email, "id": u.id, "active": u.active} for u in users]
-    return jsonify({"res": res})
+        return jsonify(e)
 
 
 if __name__ == "__main__":
