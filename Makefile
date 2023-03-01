@@ -1,7 +1,5 @@
-dev:
-	docker-compose   up --build -d
-prod:
-	docker-compose  -f docker-compose.prod.yml up --build -d
+up:
+	docker-compose up --build -d
 create-db:
 	docker-compose  exec web python manage.py create_db
 stop:

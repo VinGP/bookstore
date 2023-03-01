@@ -13,22 +13,24 @@ git clone https://github.com/Badsnus/QuizGame.git
 #### 2)Заходим в директорию репозитория
 
 ```shell
-    cd bookstore
+cd bookstore
 ```
 
-#### 3) переименовываем файл *.env.dev.example* в *.env*
+#### 3) переименовываем файлы:
+
+*.env.dev.example* -> *.env* \
+*docker-compose.dev.yml* -> *docker-compose.yml*
 
 #### 4) Поднимаем контейнер
 
 ```shell
 docker-compose up --build -d
-docker-compose exec web python manage.py create_db
 ```
 
 или с помощью make
 
 ```shell
-make dev create-db
+make dev
 ```
 
 ### Запуск проекта для разработки:
@@ -42,20 +44,22 @@ git clone https://github.com/Badsnus/QuizGame.git
 #### 2)Заходим в директорию репозитория
 
 ```shell
-    cd bookstore
+cd bookstore
 ```
 
 #### 3) переименовываем файл *.env.prod.example* в *.env*
 
+*.env.prod.example* -> *.env* \
+*docker-compose.prod.yml* -> *docker-compose.yml*
+
 #### 4) Поднимаем контейнер
 
 ```shell
-docker-compose -f docker-compose.prod.yml up --build -d
-docker-compose exec web python manage.py create_db
+docker-compose up --build -d
 ```
 
 или с помощью make
 
 ```shell
-make prod create-db
+make up
 ```
