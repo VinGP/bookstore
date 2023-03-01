@@ -1,7 +1,6 @@
 import sqlalchemy
+from db_session import SqlAlchemyBase
 from sqlalchemy import orm
-
-from .db_session import SqlAlchemyBase
 
 
 class Publisher(SqlAlchemyBase):
