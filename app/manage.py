@@ -1,6 +1,7 @@
 from flask.cli import FlaskGroup
+from models import db_session
 
-from app import app, db
+from app import app
 
 cli = FlaskGroup(app)
 
@@ -8,9 +9,11 @@ cli = FlaskGroup(app)
 @cli.command("create_db")
 def create_db():
     # docker-compose exec web python manage.py create_db
-    db.drop_all()
-    db.create_all()
-    db.session.commit()
+    # db_sess = db_session.create_session()
+    # db_sess.drop_all()
+    # db.create_all()
+    # db.session.commit()
+    pass
 
 
 if __name__ == "__main__":

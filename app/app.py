@@ -2,13 +2,17 @@ from config import Config
 from flask import Flask, jsonify
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
-from models import Authors, Books, Publishers, db
+from models import db_session
+from models.authors import Author
+from models.books import Book
+from models.publishers import Publisher
 
 app = Flask(__name__)
 app.config.from_object(Config)
-db.init_app(app)
+# db.init_app(app)
+db_session.global_init(app.config["SQLALCHEMY_DATABASE_URI"])
 
-admin = Admin(app, name="microblog", template_mode="bootstrap3")
+admin = Admin(app, name="BookStoreManager", template_mode="bootstrap4")
 
 
 class BooksView(ModelView):
@@ -22,9 +26,9 @@ class BooksView(ModelView):
     )
 
 
-admin.add_view(BooksView(Books, db.session))
-admin.add_view(ModelView(Publishers, db.session))
-admin.add_view(ModelView(Authors, db.session))
+admin.add_view(BooksView(Book, db_session.create_session()))
+admin.add_view(ModelView(Publisher, db_session.create_session()))
+admin.add_view(ModelView(Author, db_session.create_session()))
 
 
 @app.route("/")
@@ -40,9 +44,12 @@ def i():
 @app.route("/add/<n>")
 def add(n):
     try:
-        a = Authors(first_name="test", second_name="test")
-        db.session.add(a)
-        db.session.commit()
+        db_sess = db_session.create_session()
+        a = Author()
+        a.first_name = "test"
+        a.second_name = "test"
+        db_sess.add(a)
+        db_sess.commit()
         at = {
             "first_name": a.first_name,
             "id": a.id,
@@ -50,19 +57,36 @@ def add(n):
             "surname": a.surname,
         }
 
-        p = Publishers("test")
-        db.session.add(p)
-        db.session.commit()
+        p = Publisher()
+        p.name = "test"
+        db_sess.add(p)
+        db_sess.commit()
         pb = {"id": p.id, "name": p.name}
-        b = Books("123423-1221-131-33", "test", 100, 2000, a.id, p.id)
-        db.session.add(b)
-        db.session.commit()
+        b = Book()
+        b.isbn = "123423-1221-131-33"
+        b.title = "test"
+        b.price = 1000
+        b.available_quantity = 100
+        b.author_id = a.id
+        b.publisher_id = p.id
+        db_sess.add(b)
+        db_sess.commit()
         bk = {"p": b.publisher_id, "a": a.id, "t": b.title}
         print(jsonify({"b": bk, "p": pb, "a": at}))
         return jsonify({"b": bk, "p": pb, "a": at})
 
     except Exception as e:
         return jsonify(e)
+
+
+@app.route("/get/")
+def get():
+    books = Book.query.all()
+    print([b.__dict__ for b in books])
+    res = {}
+    for book in books:
+        res[book.id] = book.title
+    return jsonify(res)
 
 
 if __name__ == "__main__":
