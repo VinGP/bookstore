@@ -9,21 +9,20 @@ from models.publishers import Publisher
 
 app = Flask(__name__)
 app.config.from_object(Config)
-# db.init_app(app)
 db_session.global_init(app.config["SQLALCHEMY_DATABASE_URI"])
 
 admin = Admin(app, name="BookStoreManager", template_mode="bootstrap4")
 
 
 class BooksView(ModelView):
-    column_display_pk = True  # optional, but I like to see the IDs in the list
-    column_hide_backrefs = True
-    column_list = ("id", "author_id")
-    form_columns = (
-        "id",
-        "title",
-        "author_id",
-    )
+    column_display_pk = True
+    column_hide_backrefs = False
+    column_display_all_relations = True
+    column_searchable_list = ["author.first_name", "title"]
+    column_filters = ["author", "publisher"]
+    form_columns = ["title", "author", "available_quantity", "price", "publisher"]
+
+    column_list = ("id", "title", "author", "available_quantity", "price", "publisher")
 
 
 admin.add_view(BooksView(Book, db_session.create_session()))

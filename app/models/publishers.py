@@ -10,3 +10,6 @@ class Publisher(SqlAlchemyBase):
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
     name = sqlalchemy.Column(sqlalchemy.String(128))
     books = orm.relationship("Book")
+
+    def __repr__(self):
+        return self.name
