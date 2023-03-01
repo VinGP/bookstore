@@ -16,7 +16,6 @@ services:
     depends_on:
       - db
   db:
-#    env_file: .env.db.dev
     container_name: ${APP_NAME}-db
     image: postgres:14-alpine
     volumes:
