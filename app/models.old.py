@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
-class Books(db.Model):
+class Book(db.Model):
     __tablename__ = "books"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -14,15 +14,8 @@ class Books(db.Model):
     price = db.Column(db.Integer, nullable=False)
     author_id = db.Column(db.Integer, db.ForeignKey("authors.id"), nullable=False)
     publisher_id = db.Column(db.Integer, db.ForeignKey("publishers.id"), nullable=False)
-    # author_id = db.relationship("Authors",
-    # backref=db.backref("authors", uselist=False))
-
-    # author = db.relationship("Authors", backref="books")
-    publisher = db.relationship("Publishers")
-
-    # author = db.relationship("Authors", backref="books")
-
-    author = db.relationship("Authors", backref="books")
+    publisher = db.relationship("Publisher", back_populates="book")
+    author = db.relationship("Author", back_populates="book")
 
     def __init__(
         self,
