@@ -1,5 +1,4 @@
 ## Запуск проекта
-
 ___
 
 ### Запуск проекта локально:
@@ -7,7 +6,7 @@ ___
 #### 1) Клонируем репозиторий
 
 ```shell
-git clone https://github.com/Badsnus/QuizGame.git
+git clone https://github.com/VinGP/bookstore.git
 ```
 
 #### 2)Заходим в директорию репозитория
@@ -16,10 +15,10 @@ git clone https://github.com/Badsnus/QuizGame.git
 cd bookstore
 ```
 
-#### 3) переименовываем файлы:
+#### 3) Редактируем файлы
 
-*.env.dev.example* -> *.env* \
-*docker-compose.dev.yml* -> *docker-compose.yml*
+1. переименовываем файл *.env.dev.example* -> *.env* 
+2. Редактируем переменные в файле *.env*
 
 #### 4) Поднимаем контейнер
 
@@ -35,10 +34,12 @@ make dev
 
 ### Запуск проекта на сервере:
 
+___
+
 #### 1) Клонируем репозиторий
 
 ```shell
-git clone https://github.com/Badsnus/QuizGame.git
+git clone https://github.com/VinGP/bookstore.git
 ```
 
 #### 2)Заходим в директорию репозитория
@@ -47,10 +48,12 @@ git clone https://github.com/Badsnus/QuizGame.git
 cd bookstore
 ```
 
-#### 3) переименовываем файл *.env.prod.example* в *.env*
+#### 3) Редактируем файлы
 
-*.env.prod.example* -> *.env* \
-*docker-compose.prod.yml* -> *docker-compose.yml*
+1. переименовываем файл *.env.prod.example* -> *.env* 
+2. удаляем файл *docker-compose.yml*
+3. переименовываем файл *docker-compose.prod.yml* -> *docker-compose.yml*
+4. Редактируем переменные в файле *.env*
 
 #### 4) Поднимаем контейнер
 
