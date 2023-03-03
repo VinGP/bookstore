@@ -4,12 +4,13 @@ services:
 
   web:
     container_name: ${APP_NAME}-web
-    build: ./app
+    build: ./bookstore
     command: python manage.py run -h 0.0.0.0
+#    command: python t.py
     volumes:
-      - ./app:/app
+      - ./bookstore:/app
     ports:
-      - 5000:5000
+      - ${APP_PORT}:5000
     env_file:
       - .env
     restart: always

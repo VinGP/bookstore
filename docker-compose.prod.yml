@@ -4,8 +4,8 @@ services:
   web:
     container_name: ${APP_NAME}-web-prod
     build:
-      context: ./app
-      dockerfile: Dockerfile.prod
+      context: ./bookstore
+      dockerfile: bookstore/Dockerfile.prod
     command: gunicorn --bind 0.0.0.0:5000 manage:app
     expose:
       - 5000
