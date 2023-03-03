@@ -1,15 +1,14 @@
 # from flask_babelex import Babel
 #
 # from config import Config
-from flask import jsonify
-
-# from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
-
 from app.models import db_session
 from app.models.authors import Author
 from app.models.books import Book
 from app.models.publishers import Publisher
+from flask import jsonify
+
+# from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 
 from . import admin, app, babel
 

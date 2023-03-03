@@ -13,4 +13,4 @@ babel = Babel(app)
 
 admin = Admin(app, name="BookStoreManager", template_mode="bootstrap4")
 
-from . import routes
+from . import routes  # noqa
