@@ -38,4 +38,8 @@ pycodestyle==2.10.0
 pyflakes==3.0.1
 marshmallow==3.19.0
 environs==9.5.0
+pytz==2022.7.1
+Flask-Login==0.6.2
+Babel==2.12.1
 Flask-BabelEx==0.9.4
+Flask-WTF==1.1.1

@@ -1,25 +1,10 @@
-# from flask_babelex import Babel
-#
-# from config import Config
 from app.models import db_session
 from app.models.authors import Author
 from app.models.books import Book
 from app.models.publishers import Publisher
 from flask import jsonify
 
-# from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
-
-from . import admin, app, babel
-
-#
-# app = Flask(__name__)
-# app.config.from_object(Config)
-# db_session.global_init(app.config["SQLALCHEMY_DATABASE_URI"])
-#
-# babel = Babel(app)
-#
-# admin = Admin(app, name="BookStoreManager", template_mode="bootstrap4")
+from . import app, babel
 
 
 @babel.localeselector
@@ -29,27 +14,27 @@ def get_locale():
     return "ru"
 
 
-class BooksView(ModelView):
-    column_display_pk = True
-    column_hide_backrefs = False
-    column_display_all_relations = True
-    column_searchable_list = ["author.first_name", "title"]
-    column_filters = ["author", "publisher"]
-    form_columns = ["title", "author", "available_quantity", "price", "publisher"]
+# class BooksView(ModelView):
+#     column_display_pk = True
+#     column_hide_backrefs = False
+#     column_display_all_relations = True
+#     column_searchable_list = ["author.first_name", "title"]
+#     column_filters = ["author", "publisher"]
+#     form_columns = ["title", "author", "available_quantity", "price", "publisher"]
+#
+#     column_list = ("id", "title", "author", "available_quantity", "price", "publisher")
+#
+#     def search_placeholder(self):
+#         return "Поиск по названию и автору"
 
-    column_list = ("id", "title", "author", "available_quantity", "price", "publisher")
 
-    def search_placeholder(self):
-        return "Поиск по названию и автору"
-
-
-admin.add_view(BooksView(Book, db_session.create_session()))
-admin.add_view(ModelView(Publisher, db_session.create_session()))
-admin.add_view(ModelView(Author, db_session.create_session()))
+# admin.add_view(BooksView(Book, db_session.create_session()))
+# admin.add_view(ModelView(Publisher, db_session.create_session()))
+# admin.add_view(ModelView(Author, db_session.create_session()))
 
 
 @app.route("/")
-def hello_world():
+def index():
     return jsonify({"res": "Hello World!!!"})
 
 
@@ -104,7 +89,3 @@ def get():
     for book in books:
         res[book.id] = book.title
     return jsonify(res)
-
-
-if __name__ == "__main__":
-    app.run()
