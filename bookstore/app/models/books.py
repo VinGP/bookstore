@@ -23,3 +23,5 @@ class Book(SqlAlchemyBase):
         sqlalchemy.Integer, sqlalchemy.ForeignKey("publishers.id"), nullable=False
     )
     publisher = orm.relationship("Publisher")
+
+    images = orm.relationship("Image", secondary="books_images", backref="books")

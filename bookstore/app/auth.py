@@ -56,5 +56,6 @@ def register():
             db_sess.add(user)
             db_sess.commit()
             login_user(user, remember=form.remember_me.data)
-            return redirect(request.args.get("next") or url_for("index"))
+    if current_user.is_authenticated:
+        return redirect(request.args.get("next") or url_for("index"))
     return render_template("auth/register.html", title="Регистрация", form=form)

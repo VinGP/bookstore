@@ -1,8 +1,7 @@
 from flask import Flask
-
-# from flask_admin import Admin
 from flask_babelex import Babel
 from flask_login import LoginManager
+from flask_mail import Mail
 
 from .config import Config
 from .models import db_session
@@ -14,9 +13,11 @@ login_manager = LoginManager(app)
 
 babel = Babel(app)
 
+mail = Mail(app)
+
 from app.admin import admin  # noqa
 
 from . import auth  # noqa
-from . import routes  # noqa
+from . import views  # noqa
 
 admin.init_app(app)

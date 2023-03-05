@@ -1,36 +1,19 @@
 from app.models import db_session
 from app.models.authors import Author
 from app.models.books import Book
+from app.models.images import Image
 from app.models.publishers import Publisher
-from flask import jsonify
+from flask import jsonify, render_template, request, session
 
 from . import app, babel
 
 
 @babel.localeselector
 def get_locale():
-    # Поместите сюда свою логику. Приложение может сохранять локаль
-    # в профиле пользователя, файле cookie, сеансе и т. д.
-    return "ru"
-
-
-# class BooksView(ModelView):
-#     column_display_pk = True
-#     column_hide_backrefs = False
-#     column_display_all_relations = True
-#     column_searchable_list = ["author.first_name", "title"]
-#     column_filters = ["author", "publisher"]
-#     form_columns = ["title", "author", "available_quantity", "price", "publisher"]
-#
-#     column_list = ("id", "title", "author", "available_quantity", "price", "publisher")
-#
-#     def search_placeholder(self):
-#         return "Поиск по названию и автору"
-
-
-# admin.add_view(BooksView(Book, db_session.create_session()))
-# admin.add_view(ModelView(Publisher, db_session.create_session()))
-# admin.add_view(ModelView(Author, db_session.create_session()))
+    print("12345")
+    if request.args.get("lang"):
+        session["lang"] = request.args.get("lang")
+    return session.get("lang", "ru")
 
 
 @app.route("/")
@@ -89,3 +72,37 @@ def get():
     for book in books:
         res[book.id] = book.title
     return jsonify(res)
+
+
+@app.route("/img/")
+def img():
+    db_sess = db_session.create_session()
+    image = Image()
+    db_sess.add(image)
+    db_sess.commit()
+    return jsonify({"id": image.id})
+
+
+@app.route("/book/<int:id>")
+def book(id):
+    db_sess = db_session.create_session()
+    b = db_sess.query(Book).get(id)
+    print(b)
+    print(b.id)
+    for i in b.images:
+        print(i.id)
+    return jsonify({"res": i.id})
+
+
+@app.route("/mail/")
+def test_mail():
+    from app.mail import send_email
+
+    send_email(
+        "Заказ | BookStore",
+        f"Test Book Store <{app.config['MAIL_USERNAME']}>",
+        ["ivan.voronin.25@mail.ru"],
+        render_template("mail/test.txt"),
+        render_template("mail/test.html"),
+    )
+    return jsonify({"res": True})
