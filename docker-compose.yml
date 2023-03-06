@@ -6,7 +6,6 @@ services:
     container_name: ${APP_NAME}-web
     build: ./bookstore
     command: python manage.py run -h 0.0.0.0
-#    command: python t.py
     volumes:
       - ./bookstore:/app
     ports:
@@ -16,6 +15,7 @@ services:
     restart: always
     depends_on:
       - db
+      - mailhog
   db:
     container_name: ${APP_NAME}-db
     image: postgres:14-alpine
@@ -28,6 +28,13 @@ services:
       - POSTGRES_DB=${DB_NAME}
     ports:
       - "54320:5432"
+  mailhog:
+    image: mailhog/mailhog
+    logging:
+      driver: 'none'  # disable saving logs
+    ports:
+      - "1025:1025" # smtp server
+      - "8025:8025" # web ui
 
 
 volumes:

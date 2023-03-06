@@ -1,3 +1,5 @@
+import os.path as op
+
 from flask import Flask
 from flask_babelex import Babel
 from flask_login import LoginManager
@@ -8,6 +10,8 @@ from .models import db_session
 
 app = Flask(__name__)
 app.config.from_object(Config)
+file_path = op.join(op.dirname(__file__), "files")
+
 db_session.global_init(app.config["SQLALCHEMY_DATABASE_URI"])
 login_manager = LoginManager(app)
 

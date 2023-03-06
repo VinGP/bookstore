@@ -16,3 +16,5 @@ class Config(object):
     MAIL_PASSWORD = env.str("MAIL_PASSWORD", "111")
 
     FLASK_ADMIN_FLUID_LAYOUT = True
+    FLASK_ADMIN_SWATCH = "cerulean"
+    FLASK_ADMIN_TEMPLATE_MODE = "bootstrap4"

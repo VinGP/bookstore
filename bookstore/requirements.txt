@@ -26,3 +26,4 @@ Flask-BabelEx==0.9.4
 Flask-WTF==1.1.1
 Flask-Mail==0.9.1
 blinker==1.5
+Pillow==9.4.0
