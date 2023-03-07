@@ -53,7 +53,7 @@ pre-commit install
     - http://localhost:8025/ - веб интерфейс
     - http://localhost:1025/ - SMTP сервер
 - Postgresql
-    - http://localhost:54320/ - База данных приложения
+    - http://localhost:54320/ - База данных приложения (54320 - для локального подключения; 5432 - внутри контейнеров)
     - http://localhost:5050/ - pgAdmin для администрирования базы данных (email:
       admin@admin.com; пароль: root)
 
