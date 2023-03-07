@@ -19,7 +19,13 @@ cd bookstore
 #### 3) Редактируем файлы
 
 1. переименовываем файл *.env.dev.example* -> *.env*
-2. Редактируем переменные в файле *.env*
+2. Редактируем переменные в файле *.env* (по желанию)
+    - Вместо MailHog вы можете подключить свою электронную почту, например Gmail:
+        - MAIL_SERVER = smtp.gmail.com
+        - MAIL_PORT = 587
+        - MAIL_USE_TLS = true
+        - MAIL_USERNAME = адрес (example@gmail.com)
+        - MAIL_PASSWORD = пароль
 
 #### 4) Поднимаем контейнер
 
@@ -53,7 +59,8 @@ pre-commit install
     - http://localhost:8025/ - веб интерфейс
     - http://localhost:1025/ - SMTP сервер
 - Postgresql
-    - http://localhost:54320/ - База данных приложения (54320 - для локального подключения; 5432 - внутри контейнеров)
+    - http://localhost:54320/ - База данных приложения (54320 - для локального
+      подключения; 5432 - внутри контейнеров)
     - http://localhost:5050/ - pgAdmin для администрирования базы данных (email:
       admin@admin.com; пароль: root)
 
