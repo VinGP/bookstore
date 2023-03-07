@@ -10,7 +10,6 @@ from . import app, babel
 
 @babel.localeselector
 def get_locale():
-    print("12345")
     if request.args.get("lang"):
         session["lang"] = request.args.get("lang")
     return session.get("lang", "ru")
@@ -57,7 +56,7 @@ def add(n):
         db_sess.add(b)
         db_sess.commit()
         bk = {"p": b.publisher_id, "a": a.id, "t": b.title}
-        print(jsonify({"b": bk, "p": pb, "a": at}))
+        # print(jsonify({"b": bk, "p": pb, "a": at}))
         return jsonify({"b": bk, "p": pb, "a": at})
 
     except Exception as e:
@@ -67,7 +66,7 @@ def add(n):
 @app.route("/get/")
 def get():
     books = Book.query.all()
-    print([b.__dict__ for b in books])
+    # print([b.__dict__ for b in books])
     res = {}
     for book in books:
         res[book.id] = book.title
@@ -83,15 +82,15 @@ def img():
     return jsonify({"id": image.id})
 
 
-@app.route("/book/<int:id>")
-def book(id):
-    db_sess = db_session.create_session()
-    b = db_sess.query(Book).get(id)
-    print(b)
-    print(b.id)
-    for i in b.images:
-        print(i.id)
-    return jsonify({"res": i.id})
+# @app.route("/book/<int:id>")
+# def book(id):
+#     db_sess = db_session.create_session()
+#     # b = db_sess.query(Book).get(id)
+#     # print(b)
+#     # print(b.id)
+#     # for i in b.images:
+#     #     print(i.id)
+#     return jsonify({"res": i.id})
 
 
 @app.route("/mail/")
