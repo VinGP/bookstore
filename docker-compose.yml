@@ -4,7 +4,7 @@ services:
     container_name: ${APP_NAME}-web
     build: ./bookstore
     command: python manage.py run -h 0.0.0.0
-    #    command: gunicorn --bind 0.0.0.0:5000 manage:app
+#    command: gunicorn --bind 0.0.0.0:5000 manage:app
     volumes:
       - ./bookstore:/app
     ports:

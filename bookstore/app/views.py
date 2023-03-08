@@ -1,11 +1,18 @@
 from app.models import db_session
 from app.models.authors import Author
 from app.models.books import Book
-from app.models.images import Image
 from app.models.publishers import Publisher
 from flask import jsonify, render_template, request, session
 
 from . import app, babel
+
+
+@app.context_processor
+def utility_processor():
+    def format_author(author: Author):
+        return f"{author.first_name} {author.second_name[0]}.{' ' + author.surname[0] + '.' if author.surname else ''}"
+
+    return dict(format_author=format_author)
 
 
 @babel.localeselector
@@ -17,12 +24,19 @@ def get_locale():
 
 @app.route("/")
 def index():
-    return jsonify({"res": "Hello World!!!"})
+    db_sess = db_session.create_session()
+    books = db_sess.query(Book).all()
+    return render_template("index.html", books=books)
 
 
 @app.route("/i")
 def i():
     return jsonify({"res": "i!!!"})
+
+
+@app.route("/book/<int:id>")
+def book(id):
+    return jsonify({"id": id})
 
 
 @app.route("/add/<n>")
@@ -71,26 +85,6 @@ def get():
     for book in books:
         res[book.id] = book.title
     return jsonify(res)
-
-
-@app.route("/img/")
-def img():
-    db_sess = db_session.create_session()
-    image = Image()
-    db_sess.add(image)
-    db_sess.commit()
-    return jsonify({"id": image.id})
-
-
-# @app.route("/book/<int:id>")
-# def book(id):
-#     db_sess = db_session.create_session()
-#     # b = db_sess.query(Book).get(id)
-#     # print(b)
-#     # print(b.id)
-#     # for i in b.images:
-#     #     print(i.id)
-#     return jsonify({"res": i.id})
 
 
 @app.route("/mail/")

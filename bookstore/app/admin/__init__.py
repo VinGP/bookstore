@@ -10,4 +10,4 @@ admin = Admin(
     base_template="admin/my_master.html",
 )
 
-from app.admin.views import authors, books, images, publisher, users  # noqa
+from app.admin.views import authors, books, publisher, users  # noqa

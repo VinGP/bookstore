@@ -1,5 +1,11 @@
+import os
+import uuid
+
 import sqlalchemy
+from app import file_path
+from flask_admin import form
 from sqlalchemy import orm
+from sqlalchemy.event import listens_for
 
 from .db_session import SqlAlchemyBase
 
@@ -9,7 +15,7 @@ class Book(SqlAlchemyBase):
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
     isbn = sqlalchemy.Column(sqlalchemy.String(128))
-    title = sqlalchemy.Column(sqlalchemy.Text())
+    title = sqlalchemy.Column(sqlalchemy.String(255))
     publication_date = sqlalchemy.Column(
         sqlalchemy.DateTime, default=sqlalchemy.func.current_timestamp()
     )
@@ -24,4 +30,24 @@ class Book(SqlAlchemyBase):
     )
     publisher = orm.relationship("Publisher")
 
-    images = orm.relationship("Image", secondary="books_images", backref="books")
+    image = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
+
+    @staticmethod
+    def generate_image_uuid():
+        return str(uuid.uuid4())
+
+
+@listens_for(Book, "after_delete")
+def del_image(mapper, connection, target):
+    if target.image:
+        try:
+            os.remove(os.path.join(file_path, target.image))
+
+        except OSError:
+            pass
+
+        # Delete thumbnail
+        try:
+            os.remove(os.path.join(file_path, form.thumbgen_filename(target.image)))
+        except OSError:
+            pass

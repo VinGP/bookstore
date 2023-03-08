@@ -1,3 +1,4 @@
+from app import file_path
 from app.admin import admin
 from app.admin.views.base import MyBaseView
 from app.models import db_session
@@ -5,6 +6,13 @@ from app.models.books import Book
 from flask import url_for
 from flask_admin import form
 from markupsafe import Markup
+
+
+def name_gen_image(model, file_data):
+    hash_name = (
+        f'image/book/{model.generate_image_uuid()}.{file_data.filename.split(".")[-1]}'
+    )
+    return hash_name
 
 
 class BooksView(MyBaseView):
@@ -19,7 +27,7 @@ class BooksView(MyBaseView):
         "available_quantity",
         "price",
         "publisher",
-        "images",
+        "image",
     ]
 
     column_list = (
@@ -29,7 +37,7 @@ class BooksView(MyBaseView):
         "available_quantity",
         "price",
         "publisher",
-        "images",
+        "image",
     )
     column_labels = dict(
         id="ID",
@@ -41,36 +49,33 @@ class BooksView(MyBaseView):
     )
 
     def _list_thumbnail(view, context, model, name):
-        print("11111", model.images[0])
-        if not model.images:
+        if not model.image:
             return ""
-        try:
-            # print("!!!", model.images.path)
-            print(
-                url_for("static", filename=form.thumbgen_filename(model.images[0].path))
-            )
-            print(url_for("static", filename="upload/" + model.images[0].path))
-            return Markup(
-                '<img src="%s">'
-                % url_for("static", filename="upload/" + model.images[0].path)
-            )
-        except Exception as e:
-            print(e)
-            return "her"
 
-    column_formatters = {"images": _list_thumbnail}
+        url = url_for("static", filename=model.image)
+        return Markup(f'<img src={url} width="100">')
 
-    #
-    # # Alternative way to contribute field is to override it completely.
-    # # In this case, Flask-Admin won't attempt to merge various parameters for the field.
-    # form_extra_fields = {
-    #     'images': form.ImageUploadField('Image',
-    #                                     base_path=file_path,
-    #                                     thumbnail_size=(100, 100, True))
-    # }
+    column_formatters = {"image": _list_thumbnail}
+
+    form_extra_fields = {
+        "image": form.ImageUploadField(
+            "",
+            base_path=file_path,
+            namegen=name_gen_image,
+            allowed_extensions=["jpeg", "jpg", "png", "webp"],
+            max_size=(1200, 780, True),
+            # thumbnail_size=(100, 100, False),
+        )
+    }
 
     def search_placeholder(self):
         return "Поиск по названию и автору"
+
+    def create_form(self, obj=None):
+        return super(BooksView, self).create_form(obj)
+
+    def edit_form(self, obj=None):
+        return super(BooksView, self).edit_form(obj)
 
 
 admin.add_view(BooksView(Book, db_session.create_session(), name="Книги"))
