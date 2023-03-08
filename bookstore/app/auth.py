@@ -8,8 +8,8 @@ from flask_login import current_user, login_required, login_user, logout_user
 
 @login_manager.user_loader
 def load_user(user_id):
-    db_sess = db_session.create_session()
-    return db_sess.query(User).get(user_id)
+    with db_session.create_session() as db_sess:
+        return db_sess.query(User).get(user_id)
 
 
 @app.route("/logout")
@@ -23,11 +23,11 @@ def logout():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        user = db_sess.query(User).filter(User.email == form.email.data).first()
-        if user and user.check_password(form.password.data):
-            login_user(user, remember=form.remember_me.data)
-            return redirect(request.args.get("next") or url_for("index"))
+        with db_session.create_session() as db_sess:
+            user = db_sess.query(User).filter(User.email == form.email.data).first()
+            if user and user.check_password(form.password.data):
+                login_user(user, remember=form.remember_me.data)
+                return redirect(request.args.get("next") or url_for("index"))
         flash("Неправильный логин или пароль")
     if current_user.is_authenticated:
         return redirect(request.args.get("next") or url_for("index"))
@@ -45,17 +45,19 @@ def register():
                 form=form,
                 message="Пароли не совпадают",
             )
-        db_sess = db_session.create_session()
-        if db_sess.query(User).filter(User.email == form.email.data).first():
-            flash("Такой пользователь уже есть")
-        else:
-            user = User(
-                name=form.name.data, email=form.email.data, surname=form.surname.data
-            )
-            user.set_password(form.password.data)
-            db_sess.add(user)
-            db_sess.commit()
-            login_user(user, remember=form.remember_me.data)
+        with db_session.create_session() as db_sess:
+            if db_sess.query(User).filter(User.email == form.email.data).first():
+                flash("Такой пользователь уже есть")
+            else:
+                user = User(
+                    name=form.name.data,
+                    email=form.email.data,
+                    surname=form.surname.data,
+                )
+                user.set_password(form.password.data)
+                db_sess.add(user)
+                db_sess.commit()
+                login_user(user, remember=form.remember_me.data)
     if current_user.is_authenticated:
         return redirect(request.args.get("next") or url_for("index"))
     return render_template("auth/register.html", title="Регистрация", form=form)

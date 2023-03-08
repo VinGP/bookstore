@@ -16,7 +16,7 @@ def global_init(database_url):
 
     print(f"Подключение к базе данных по адресу {database_url}")
 
-    engine = sa.create_engine(database_url, echo=False, pool_size=20, max_overflow=0)
+    engine = sa.create_engine(database_url, echo=False, pool_size=20)
     __factory = orm.sessionmaker(bind=engine)
 
     from . import __all_models

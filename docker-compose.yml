@@ -18,6 +18,7 @@ services:
   db:
     container_name: ${APP_NAME}-db
     image: postgres:14-alpine
+    command: postgres -N 100
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     restart: always

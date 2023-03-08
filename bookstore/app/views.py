@@ -24,9 +24,9 @@ def get_locale():
 
 @app.route("/")
 def index():
-    db_sess = db_session.create_session()
-    books = db_sess.query(Book).all()
-    return render_template("index.html", books=books)
+    with db_session.create_session() as db_sess:
+        books = db_sess.query(Book).all()
+        return render_template("index.html", books=books)
 
 
 @app.route("/i")
@@ -49,50 +49,50 @@ def book(id: int):
 
 @app.route("/author/<int:id>")
 def author(id: int):
-    db_sess = db_session.create_session()
-    author = db_sess.query(Author).filter(Author.id == id).first()
-    res = {
-        "id": author.id,
-        "first_name": author.first_name,
-        "second_name": author.second_name,
-        "surname": author.surname,
-    }
+    with db_session.create_session() as db_sess:
+        author = db_sess.query(Author).filter(Author.id == id).first()
+        res = {
+            "id": author.id,
+            "first_name": author.first_name,
+            "second_name": author.second_name,
+            "surname": author.surname,
+        }
     return jsonify(dict(res=res))
 
 
 @app.route("/add/<n>")
 def add(n):
     try:
-        db_sess = db_session.create_session()
-        a = Author()
-        a.first_name = "test"
-        a.second_name = "test"
-        db_sess.add(a)
-        db_sess.commit()
-        at = {
-            "first_name": a.first_name,
-            "id": a.id,
-            "second_name": a.second_name,
-            "surname": a.surname,
-        }
+        with db_session.create_session() as db_sess:
+            a = Author()
+            a.first_name = "test"
+            a.second_name = "test"
+            db_sess.add(a)
+            db_sess.commit()
+            at = {
+                "first_name": a.first_name,
+                "id": a.id,
+                "second_name": a.second_name,
+                "surname": a.surname,
+            }
 
-        p = Publisher()
-        p.name = "test"
-        db_sess.add(p)
-        db_sess.commit()
-        pb = {"id": p.id, "name": p.name}
-        b = Book()
-        b.isbn = "123423-1221-131-33"
-        b.title = "test"
-        b.price = 1000
-        b.available_quantity = 100
-        b.author_id = a.id
-        b.publisher_id = p.id
-        db_sess.add(b)
-        db_sess.commit()
-        bk = {"p": b.publisher_id, "a": a.id, "t": b.title}
-        # print(jsonify({"b": bk, "p": pb, "a": at}))
-        return jsonify({"b": bk, "p": pb, "a": at})
+            p = Publisher()
+            p.name = "test"
+            db_sess.add(p)
+            db_sess.commit()
+            pb = {"id": p.id, "name": p.name}
+            b = Book()
+            b.isbn = "123423-1221-131-33"
+            b.title = "test"
+            b.price = 1000
+            b.available_quantity = 100
+            b.author_id = a.id
+            b.publisher_id = p.id
+            db_sess.add(b)
+            db_sess.commit()
+            bk = {"p": b.publisher_id, "a": a.id, "t": b.title}
+            # print(jsonify({"b": bk, "p": pb, "a": at}))
+            return jsonify({"b": bk, "p": pb, "a": at})
 
     except Exception as e:
         return jsonify(e)
