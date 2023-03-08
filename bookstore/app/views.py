@@ -36,15 +36,17 @@ def i():
 
 @app.route("/book/<int:id>")
 def book(id: int):
-    db_sess = db_session.create_session()
-    book = db_sess.query(Book).filter(Book.id == id).first()
-    res = {
-        "id": book.id,
-        "title": book.title,
-        "author": book.author.__repr__(),
-        "isbn": book.isbn,
-    }
-    return jsonify({"res": res})
+    with db_session.create_session() as db_sess:
+        book = db_sess.query(Book).filter(Book.id == id).first()
+        if book:
+            res = {
+                "id": book.id,
+                "title": book.title,
+                "author": book.author.__repr__(),
+                "isbn": book.isbn,
+            }
+            return jsonify({"res": res})
+        return jsonify({"res": {}})
 
 
 @app.route("/author/<int:id>")
