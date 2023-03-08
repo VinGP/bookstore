@@ -19,9 +19,10 @@ class BooksView(MyBaseView):
     column_display_pk = True
     column_hide_backrefs = False
     column_display_all_relations = True
-    column_searchable_list = ["author.first_name", "title"]
+    column_searchable_list = ["author.first_name", "title", "isbn"]
     column_filters = ["author", "publisher"]
     form_columns = [
+        "isbn",
         "title",
         "author",
         "available_quantity",
@@ -38,6 +39,7 @@ class BooksView(MyBaseView):
         "price",
         "publisher",
         "image",
+        "isbn",
     )
     column_labels = dict(
         id="ID",
@@ -46,6 +48,7 @@ class BooksView(MyBaseView):
         available_quantity="Количество экземпляров",
         publisher="Издательство",
         price="Цена",
+        isbn="ISBN",
     )
 
     def _list_thumbnail(view, context, model, name):

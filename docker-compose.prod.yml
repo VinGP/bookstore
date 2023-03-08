@@ -5,8 +5,10 @@ services:
     container_name: ${APP_NAME}-web-prod
     build:
       context: ./bookstore
-      dockerfile: bookstore/Dockerfile.prod
+      dockerfile: Dockerfile.prod
     command: gunicorn --bind 0.0.0.0:5000 manage:app
+    volumes:
+      - ./bookstore:/app
     expose:
       - 5000
     env_file:
@@ -25,7 +27,7 @@ services:
   nginx:
     build: ./nginx
     volumes:
-      - static_volume:/home/app/static
+      - ./bookstore/app/static:/app/app/static
     ports:
       - "80:80"
     depends_on:
@@ -33,4 +35,3 @@ services:
 
 volumes:
   postgres_data_prod:
-  static_volume:
