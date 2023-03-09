@@ -1,1 +1,1 @@
-from . import authors, books, publishers, users
+from . import authors, books, images, publishers, users

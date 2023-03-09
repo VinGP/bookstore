@@ -5,7 +5,7 @@
             <div class="product">
                 <div class="product__img">
                     <a href="#" class="product__img__a"><img
-                            src="{{ url_for('static', filename=book.image if book.image else 'image/book/default.png')  }}"
+                            src="{{ url_for('static', filename=book.images[0].filename if book.images else 'image/book/default.png')  }}"
                             alt=""></a>
                 </div>
                 <div class="product__info">

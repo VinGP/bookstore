@@ -3,8 +3,10 @@ from app.admin import admin
 from app.admin.views.base import MyBaseView
 from app.models import db_session
 from app.models.books import Book
+from app.models.images import Image
 from flask import url_for
 from flask_admin import form
+from flask_admin.model import InlineFormAdmin
 from markupsafe import Markup
 
 
@@ -15,12 +17,25 @@ def name_gen_image(model, file_data):
     return hash_name
 
 
+class InlineModelForm(InlineFormAdmin):
+    form_extra_fields = {
+        "filename": form.ImageUploadField(
+            "",
+            base_path=file_path,
+            namegen=name_gen_image,
+            allowed_extensions=["jpeg", "jpg", "png", "webp"],
+            max_size=(1200, 780, True),
+        )
+    }
+
+
 class BooksView(MyBaseView):
     column_display_pk = True
     column_hide_backrefs = False
     column_display_all_relations = True
     column_searchable_list = ["author.first_name", "title", "isbn"]
     column_filters = ["author", "publisher"]
+    inline_models = (InlineModelForm(Image),)
     form_columns = [
         "isbn",
         "title",
@@ -28,7 +43,7 @@ class BooksView(MyBaseView):
         "available_quantity",
         "price",
         "publisher",
-        "image",
+        # "images",
     ]
 
     column_list = (
@@ -38,7 +53,7 @@ class BooksView(MyBaseView):
         "available_quantity",
         "price",
         "publisher",
-        "image",
+        "images",
         "isbn",
     )
     column_labels = dict(
@@ -52,24 +67,13 @@ class BooksView(MyBaseView):
     )
 
     def _list_thumbnail(view, context, model, name):
-        if not model.image:
+        if not model.images:
             return ""
 
-        url = url_for("static", filename=model.image)
+        url = url_for("static", filename=model.images[0].filename)
         return Markup(f'<img src={url} width="100">')
 
-    column_formatters = {"image": _list_thumbnail}
-
-    form_extra_fields = {
-        "image": form.ImageUploadField(
-            "",
-            base_path=file_path,
-            namegen=name_gen_image,
-            allowed_extensions=["jpeg", "jpg", "png", "webp"],
-            max_size=(1200, 780, True),
-            # thumbnail_size=(100, 100, False),
-        )
-    }
+    column_formatters = {"images": _list_thumbnail}
 
     def search_placeholder(self):
         return "Поиск по названию и автору"
