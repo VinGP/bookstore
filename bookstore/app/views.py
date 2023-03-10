@@ -26,7 +26,7 @@ def get_locale():
 def index():
     with db_session.create_session() as db_sess:
         books = db_sess.query(Book).all()
-        return render_template("index.html", books=books)
+        return render_template("index.html", books=books, title="Книжный магазин")
 
 
 @app.route("/i")
@@ -122,3 +122,13 @@ def test_mail():
         render_template("mail/test.html"),
     )
     return jsonify({"res": True})
+
+
+@app.route("/personal")
+def personal():
+    return "personal"
+
+
+@app.route("/cart")
+def cart():
+    return "cart"

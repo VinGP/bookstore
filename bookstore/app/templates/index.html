@@ -1,18 +1,18 @@
 {% extends 'base.html' %}
 {% block stylesheet %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 {% endblock %}
 
 {% block content %}
 
-    <div class="catalog-page">
-        <h1 class="catalog-page__title">Популярные книги</h1>
-        <div class="col-12">
-            {% include "__books.html" %}
-        </div>
+<div class="catalog-page">
+    <h2>Популярные книги</h2>
+    <div class="col-12">
+        {% include "__books.html" %}
     </div>
+</div>
 
 {% endblock %}
 {% block scripts %}
-    <script src="{{ url_for('static', filename='js/newMain.js') }}"></script>
+<script src="{{ url_for('static', filename='js/newMain.js') }}"></script>
 {% endblock %}

@@ -1,5 +1,7 @@
 {% extends 'admin/base.html' %}
-
+{% block head %}
+    <link rel="icon" href="{{ url_for('static', filename='image/icon/favicon.png') }}">
+{% endblock %}
 {% block access_control %}
 {% if current_user.is_authenticated %}
 <div class="dropdown show">
