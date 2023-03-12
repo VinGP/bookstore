@@ -170,12 +170,12 @@ body {
     padding: 0;
   }
 }
-
+/*
 .catalog-page {
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
-}
+}*/
 
 .catalog {
   display: flex;
@@ -187,4 +187,9 @@ body {
   flex-shrink: 0;
   flex-basis: 194px;
   margin-right: 30px;
+}
+@media (min-width: 1200px) {
+  .catalog-page .col-xl-2 {
+    width: 20%;
+  }
 }

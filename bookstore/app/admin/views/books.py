@@ -18,6 +18,10 @@ def name_gen_image(model, file_data):
 
 
 class InlineModelForm(InlineFormAdmin):
+    form_columns = [
+        "id",
+        "filename",
+    ]
     form_extra_fields = {
         "filename": form.ImageUploadField(
             "",

@@ -22,6 +22,6 @@ class Book(SqlAlchemyBase):
     publisher_id = sqlalchemy.Column(
         sqlalchemy.Integer, sqlalchemy.ForeignKey("publishers.id"), nullable=False
     )
-    publisher = orm.relationship("Publisher")
+    publisher = orm.relationship("Publisher", backref="user")
 
-    images = orm.relationship("Image")
+    images = orm.relationship("Image", backref="user")

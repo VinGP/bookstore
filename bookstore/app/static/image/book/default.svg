@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="121px" height="187px" viewBox="0 0 121 187" version="1.1"
+     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>PlaceholderBook</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="PlaceholderBook" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M1,1 L1,186 L117.008578,186 C118.657267,186 120,184.658255 120,183.007727 L120,3.99227341 C120,2.34175512 118.659328,1 117.008578,1 L1,1 Z M0,0 L117.008578,0 C119.212979,0 121,1.79083779 121,3.99227341 L121,183.007727 C121,185.212598 119.207492,187 117.008578,187 L0,187 L0,0 Z"
+              id="Rectangle-1" fill="#C9C9C9" fill-rule="nonzero"></path>
+        <path d="M10.5,0.5 L10.5,187.5 L10.5,0.5 Z M10.5,0.5 L10.5,187.5 L10.5,0.5 Z" id="Line"
+              fill="#C9C9C9" fill-rule="nonzero"></path>
+        <polygon id="Line-Copy-3" fill="#C9C9C9" fill-rule="nonzero"
+                 points="9 0 10 0 10 186.010803 9 186.010803"></polygon>
+        <polygon id="Line-Copy-5" fill="#C9C9C9" fill-rule="nonzero"
+                 points="118 1 119 1 119 186 118 186"></polygon>
+        <polygon id="Line-Copy-6" fill="#C9C9C9" fill-rule="nonzero"
+                 points="116 0 117 0 117 186.010803 116 186.010803"></polygon>
+        <polygon id="Line-Copy-7" fill="#C9C9C9" fill-rule="nonzero"
+                 points="114 0 115 0 115 186.010803 114 186.010803"></polygon>
+        <polygon id="Line" fill="#C9C9C9" fill-rule="nonzero"
+                 points="36.9545455 56 36.9545455 55 87.079114 55 87.079114 56"></polygon>
+        <polygon id="Line-Copy-4" fill="#C9C9C9" fill-rule="nonzero"
+                 points="36.9545455 76 36.9545455 75 87.079114 75 87.079114 76"></polygon>
+        <polygon id="Line-Copy-2" fill="#C9C9C9" fill-rule="nonzero"
+                 points="46 145 46 144 77.1496277 144 77.1496277 145"></polygon>
+        <polygon id="Line-Copy" fill="#C9C9C9" fill-rule="nonzero"
+                 points="29.95 66 29.95 65 93.0760788 65 93.0760788 66"></polygon>
+<!--        <path d="M62,175.5 C55.6487254,175.5 50.5,170.351275 50.5,164 C50.5,157.648725 55.6487254,152.5 62,152.5 C68.3512746,152.5 73.5,157.648725 73.5,164 C73.5,170.351275 68.3512746,175.5 62,175.5 Z M62,174.5 C67.7989899,174.5 72.5,169.79899 72.5,164 C72.5,158.20101 67.7989899,153.5 62,153.5 C56.2010101,153.5 51.5,158.20101 51.5,164 C51.5,169.79899 56.2010101,174.5 62,174.5 Z"-->
+<!--              id="Oval-1" fill="#C9C9C9" fill-rule="nonzero"></path>-->
+<!--        <path d="M57.8762883,167.829252 C57.6944473,168.037071 57.378566,168.058129 57.1707477,167.876288 C56.9629294,167.694447 56.9418706,167.378566 57.1237117,167.170748 L64.1237117,159.170748 C64.3055527,158.962929 64.621434,158.941871 64.8292523,159.123712 C65.0370706,159.305553 65.0581294,159.621434 64.8762883,159.829252 L57.8762883,167.829252 Z"-->
+<!--              id="Line-3" fill="#CACACA" fill-rule="nonzero"></path>-->
+<!--        <path d="M64,162.5 C64,162.223858 64.2238576,162 64.5,162 C64.7761424,162 65,162.223858 65,162.5 L65,167.5 C65,167.776142 64.7761424,168 64.5,168 C64.2238576,168 64,167.776142 64,167.5 L64,162.5 Z"-->
+<!--              id="Line-2" fill="#CACACA" fill-rule="nonzero"></path>-->
+    </g>
+</svg>

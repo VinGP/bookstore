@@ -26,6 +26,10 @@ def get_locale():
 def index():
     with db_session.create_session() as db_sess:
         books = db_sess.query(Book).all()
+        books = books.copy()
+        for b in books:
+            print(b)
+
         return render_template("index.html", books=books, title="Книжный магазин")
 
 

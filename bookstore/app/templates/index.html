@@ -1,18 +1,33 @@
 {% extends 'base.html' %}
 {% block stylesheet %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/owlcarousel/owl.carousel.min.css') }}">
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/owlcarousel/owl.theme.default.min.css') }}">
 {% endblock %}
+{% block scripts_head %}
+<script src="{{ url_for('static', filename='js/owlcarousel/owl.carousel.min.js') }}"></script>
+{% endblock %}
+
+{% import 'carousel_tmp.html' as carousel_tmp with context %}
 
 {% block content %}
 
 <div class="catalog-page">
-    <h2>Популярные книги</h2>
-    <div class="col-12">
-        {% include "__books.html" %}
+    {% for n in range(5) %}
+    <div class="carousel">
+        <h2>Популярные книги</h2>
     </div>
+    <div class="col-12">
+        {{ carousel_tmp.carousel(books, loop.index) }}
+    </div>
+    {% endfor %}
 </div>
 
+
 {% endblock %}
+
 {% block scripts %}
+
 <script src="{{ url_for('static', filename='js/newMain.js') }}"></script>
 {% endblock %}
