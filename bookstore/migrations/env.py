@@ -81,14 +81,3 @@ if context.is_offline_mode():
     run_migrations_offline()
 else:
     run_migrations_online()
-
-# alembic revision --autogenerate -m ""
-# alembic revision -m "init"
-
-# docker-compose exec web python -m alembic init migrations
-# alembic upgrade head
-
-# docker-compose exec web python -m alembic init migrations
-# docker-compose exec web python -m alembic revision --autogenerate -m "init"
-# docker-compose exec web python -m alembic upgrade head
-# docker-compose exec web python -m alembic revision --autogenerate -m "name"
