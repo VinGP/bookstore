@@ -13,6 +13,7 @@ app.config.from_object(Config)
 # file_path = os.path(os.path.dirname(__name__))
 file_path = os.path.join(os.path.dirname(__file__), "static")
 db_session.global_init(app.config["SQLALCHEMY_DATABASE_URI"])
+
 login_manager = LoginManager(app)
 
 babel = Babel(app)

@@ -39,6 +39,12 @@ docker-compose up --build -d
 make dev
 ```
 
+#### 5) Применяем миграции
+
+```shell
+docker-compose exec web python -m alembic upgrade head
+```
+
 #### Для разработки:
 
 После выполнения пунктов для локального запуска, надо выполнить следующие команды:
@@ -97,4 +103,10 @@ docker-compose up --build -d
 
 ```shell
 make up
+```
+
+#### 5) Применяем миграции
+
+```shell
+docker-compose exec web python -m alembic upgrade head
 ```

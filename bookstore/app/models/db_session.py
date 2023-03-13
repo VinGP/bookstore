@@ -21,7 +21,7 @@ def global_init(database_url):
 
     from . import __all_models
 
-    SqlAlchemyBase.metadata.create_all(engine)
+    # SqlAlchemyBase.metadata.create_all(engine)
 
 
 def create_session() -> Session:
