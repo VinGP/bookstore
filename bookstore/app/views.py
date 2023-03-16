@@ -26,7 +26,7 @@ def get_locale():
 def index():
     with db_session.create_session() as db_sess:
         books = db_sess.query(Book).all()
-        return render_template("index.html", books=books * 2, title="Книжный магазин")
+        return render_template("index.html", books=books * 5, title="Книжный магазин")
 
 
 @app.route("/i")

@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  web:
+    container_name: ${APP_NAME}-web-prod
+    build:
+      context: ./bookstore
+      dockerfile: Dockerfile.prod
+    command: gunicorn --bind 0.0.0.0:5000 manage:app
+    volumes:
+      - ./bookstore:/app
+    expose:
+      - 5000
+    env_file:
+      - .env
+    depends_on:
+      - db
+  db:
+    container_name: ${APP_NAME}-db-prod
+    image: postgres:14-alpine
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+  nginx:
+    build: ./nginx_ssl
+    volumes:
+      - ./bookstore/app/static:/app/app/static
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - web
+  certbot:
+    image: certbot/certbot
+    depends_on:
+      - nginx
+    volumes:
+    - ./certbot/conf:/etc/letsencrypt
+    - ./certbot/www:/var/www/certbot
+    command: certonly --reinstall --webroot --webroot-path=/var/www/certbot --email ${EMAIL} --agree-tos --no-eff-email-d ${DOMAIN}
+              # certonly --webroot -w /var/www/certbot --force-renewal --email {email} -d {domain} --agree-tos
+
+volumes:
+  postgres_data_prod:
