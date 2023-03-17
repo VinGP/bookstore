@@ -30,13 +30,12 @@ services:
       - .env
     volumes:
       - ./bookstore/app/static:/app/app/static
-#      - ./certbot/conf:/etc/letsencrypt
-#      - ./certbot/www:/var/www/certbot
-      - etc-letsencrypt:/etc/letsencrypt
-      - www-html:/var/www/html
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
     ports:
       - "80:80"
       - "443:443"
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
     depends_on:
       - web
   certbot:
@@ -44,13 +43,11 @@ services:
     depends_on:
       - nginx
     volumes:
-    - etc-letsencrypt:/etc/letsencrypt
-    - www-html:/var/www/html
-#    - ./certbot/www:/var/www/certbot
-    command: certonly --webroot --webroot-path=/var/www/html --email ${EMAIL} --agree-tos --no-eff-email -d ${DOMAIN}
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 volumes:
   postgres_data_prod:
-  etc-letsencrypt:
-  www-html:
+
 
