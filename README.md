@@ -110,3 +110,49 @@ make up
 ```shell
 docker-compose exec web python -m alembic upgrade head
 ```
+
+### Запуск проекта на сервере c SSL сертификатом:
+
+В проекте использовался бесплатный сертификат от Let’s Encrypt. Для этого вам надо приобрести доменное имя, делать DNS-записи типа A со значениями:
+- @ - your_ip
+- www - your_ip
+
+#### 1) Клонируем репозиторий
+
+```shell
+git clone https://github.com/VinGP/bookstore.git
+```
+
+#### 2)Заходим в директорию репозитория
+
+```shell
+cd bookstore
+```
+
+#### 3) Редактируем файлы
+
+1. переименовываем файл *.env.prod.ssl.example* -> *.env*
+2. удаляем файл *docker-compose.yml*
+3. переименовываем файл *docker-compose.prod.ssl.yml* -> *docker-compose.yml*
+4. Редактируем переменные в файле *.env*
+    - DOMAIN - ваш домен (example.org)
+    - DOMAIN_WWW - домен третьего уровня (www.example.org)
+    - EMAIL - адрес электронной почты для сертификата
+
+#### 4) Получаем сертификаты:
+
+```shell
+bash init-letsencrypt.sh
+```
+
+#### 5) Поднимаем контейнер
+
+```shell
+docker-compose up --build -d
+```
+
+#### 6) Применяем миграции
+
+```shell
+docker-compose exec web python -m alembic upgrade head
+```
