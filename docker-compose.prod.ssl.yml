@@ -49,5 +49,3 @@ services:
 
 volumes:
   postgres_data_prod:
-
-
