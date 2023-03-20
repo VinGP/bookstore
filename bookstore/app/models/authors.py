@@ -12,7 +12,20 @@ class Author(SqlAlchemyBase):
     second_name = sqlalchemy.Column(sqlalchemy.String(128), nullable=False)
     surname = sqlalchemy.Column(sqlalchemy.String(128))
 
-    books = orm.relationship("Book", back_populates="author")
+    books = orm.relationship(
+        "Book",
+        secondary="books_authors",
+    )
 
     def __repr__(self):
         return f"{self.first_name} {self.second_name} {self.surname}"
+
+
+books_authors = sqlalchemy.Table(
+    "books_authors",
+    SqlAlchemyBase.metadata,
+    sqlalchemy.Column("books", sqlalchemy.Integer, sqlalchemy.ForeignKey("books.id")),
+    sqlalchemy.Column(
+        "authors", sqlalchemy.Integer, sqlalchemy.ForeignKey("authors.id")
+    ),
+)
