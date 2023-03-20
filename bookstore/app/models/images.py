@@ -15,7 +15,6 @@ class Image(SqlAlchemyBase):
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
     filename = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
-    is_title = sqlalchemy.Column(sqlalchemy.Boolean())
     book_id = sqlalchemy.Column(
         sqlalchemy.Integer, sqlalchemy.ForeignKey("books.id"), nullable=False
     )
@@ -40,3 +39,7 @@ def del_image(mapper, connection, target):
         os.remove(os.path.join(file_path, form.thumbgen_filename(target.filename)))
     except OSError:
         pass
+
+
+def generate_image_uuid():
+    return str(uuid.uuid4())
