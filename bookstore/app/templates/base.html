@@ -10,11 +10,13 @@
 <!--    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>-->
 <!--    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;700&display=swap"-->
 <!--          rel="stylesheet">-->
+    <link href="{{ url_for('static', filename='css/bootstrap/bootstrap.min.css') }}" rel="stylesheet" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link href="{{ url_for('static', filename='css/bootstrap/bootstrap.min.css') }}" rel="stylesheet" crossorigin="anonymous">
 
     <script src="{{ url_for('static', filename='js/jquery/jquery-3.6.4.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/lazysizes.min.js') }}" async=""></script>
+
     {% block stylesheet %}{% endblock %}
     {% block scripts_head %}{% endblock %}
     <title>{{ title }} | Book Store</title>

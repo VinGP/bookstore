@@ -13,12 +13,38 @@ class Category(SqlAlchemyBase):
     parent_id = sqlalchemy.Column(
         sqlalchemy.Integer, sqlalchemy.ForeignKey("categories.id")
     )
-    parent = orm.relationship("Category", backref="children", remote_side=[id])
+    parent = orm.relationship(
+        "Category", backref="children", remote_side=[id], post_update=True
+    )
 
     def __repr__(self):
         if not self.parent:
             return self.name
         return str(self.parent) + "->" + self.name
+
+    @staticmethod
+    def get_children_list(session, category_id):
+        beginning_getter = (
+            session.query(Category)
+            .filter(Category.id == category_id)
+            .cte(name="children_for", recursive=True)
+        )
+        with_recursive = beginning_getter.union_all(
+            session.query(Category).filter(Category.parent_id == beginning_getter.c.id)
+        )
+        return session.query(with_recursive)
+
+    @staticmethod
+    def get_parents_list(session, category_id):
+        beginning_getter = (
+            session.query(Category)
+            .filter(Category.id == category_id)
+            .cte(name="parent_for", recursive=True)
+        )
+        with_recursive = beginning_getter.union_all(
+            session.query(Category).filter(Category.id == beginning_getter.c.parent_id)
+        )
+        return session.query(with_recursive)
 
 
 books_categories = sqlalchemy.Table(

@@ -14,9 +14,9 @@
 {% block content %}
 
 <div class="catalog-page">
-    {% for n in range(5) %}
+    {% for category_name, books in index_books.items() %}
     <div class="carousel">
-        <h2>Популярные книги</h2>
+        <h2>{{ category_name }}</h2>
     </div>
     <div class="col-12">
         {{ carousel_tmp.carousel(books, loop.index) }}

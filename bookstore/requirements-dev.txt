@@ -46,3 +46,5 @@ Flask-WTF==1.1.1
 Pillow==9.4.0
 Flask-Mail==0.9.1
 blinker==1.5
+sqlalchemy-pagination==0.0.2
+

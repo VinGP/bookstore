@@ -1,8 +1,11 @@
 from app.models import db_session
 from app.models.authors import Author
 from app.models.books import Book
+from app.models.categories import Category, books_categories
 from app.models.publishers import Publisher
-from flask import jsonify, render_template, request, session
+from app.services.catigories import get_main_categorise
+from flask import jsonify, render_template, request, session, url_for
+from sqlalchemy_pagination import paginate
 
 from . import app, babel
 
@@ -24,9 +27,91 @@ def get_locale():
 
 @app.route("/")
 def index():
+    from random import randint
+
+    len_category = 10
     with db_session.create_session() as db_sess:
-        books = db_sess.query(Book).all()
-        return render_template("index.html", books=books * 5, title="Книжный магазин")
+        categories = get_main_categorise(db_sess)
+
+        """
+        novelties - новинки
+        best_prices - лучшие цены
+        random_book - случайная книга
+        editors_choice - выбор редакции
+        """
+
+        random_books = db_sess.query(Book).offset(randint(100, 5000)).limit(10)
+
+        novelties = (
+            db_sess.query(Book).order_by(Book.publication_date).limit(len_category)
+        )
+        best_prices = db_sess.query(Book).order_by(Book.price).limit(len_category)
+        editors_choice = db_sess.query(Book).offset(randint(100, 5000)).limit(10)
+
+        index_books = {
+            "Новинки": novelties,
+            "Лучшие цены": best_prices,
+            "Выбор редакции": editors_choice,
+            "Cлучайная книга": random_books,
+        }
+
+        return render_template(
+            "index.html",
+            index_books=index_books,
+            title="Книжный магазин",
+            categories=categories,
+        )
+
+
+@app.route("/category/<int:category_id>")
+def category_view(category_id):
+    page = request.args.get("page", 1, type=int)
+    per_page = 48
+
+    with db_session.create_session() as db_sess:
+        category = db_sess.query(Category).filter(Category.id == category_id).first()
+
+        subcategories = Category.get_children_list(db_sess, category.id)
+
+        # parent_categories = Category.get_parents_list(db_sess, category.id)
+
+        books = (
+            db_sess.query(Book)
+            .join(books_categories)
+            .join(Category)
+            .filter(Category.id.in_([ct.id for ct in subcategories]))
+            .order_by(Book.publication_date)
+        )
+
+        pagination = paginate(books, page, per_page)
+        next_url = (
+            url_for("category_view", category_id=category_id, page=pagination.next_page)
+            if pagination.has_next
+            else None
+        )
+        prev_url = (
+            url_for(
+                "category_view", category_id=category_id, page=pagination.previous_page
+            )
+            if pagination.has_previous
+            else None
+        )
+
+        categories = get_main_categorise(db_sess)
+
+        return render_template(
+            "category.html",
+            books=pagination.items,
+            categories=categories,
+            category_title=category.name,
+            total_count=pagination.total,
+            next_url=next_url,
+            prev_url=prev_url,
+            current_page=page,
+            category_id=category_id,
+            end_page=pagination.pages,
+            title=category.name,
+        )
 
 
 @app.route("/i")

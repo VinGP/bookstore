@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% import 'book_tmp.html' as book_tmp with context %}
+
+{% block content %}
+
+<div class="catalog-page">
+    <h1>{{ category_title }}</h1>
+    <p>Всего товаров: {{ total_count }}</p>
+    <div class="row">
+    {% for book in books %}
+        {{ book_tmp.book(book, size=True) }}
+    {% endfor %}
+        </div>
+</div>
+<ul class="pagination">
+    {% if next_url or prev_url  %}
+        {% if prev_url %}<li class="page-item"><a class="page-link" href="{{ prev_url }}">Назад</a></li>{% endif %}
+        {% if current_page > 2 %}
+            <li class="page-item"><a class="page-link" href="{{ url_for('category_view', category_id=category_id, page=1) }}">{{ 1 }}</a></li>
+        {% endif %}
+        {% if current_page > 3  %}
+            <li class="page-item"><a class="page-link"  tabindex="-1" aria-disabled="true">...</a></li>
+        {% endif %}
+        {% if current_page > 1 %}
+            <li class="page-item"><a class="page-link" href="{{ url_for('category_view', category_id=category_id, page=current_page-1) }}">{{ current_page - 1 }}</a></li>
+       {% endif %}
+            <li class="page-item active"><a class="page-link" >{{ current_page }}</a></li>
+        {% if current_page + 2 <= end_page %}
+            <li class="page-item"><a class="page-link" href="{{ url_for('category_view', category_id=category_id, page=current_page+1) }}">{{ current_page + 1}}</a></li>
+        {% endif %}
+        {% if  end_page - current_page > 2 %}
+            <li class="page-item"><a class="page-link"  tabindex="-1" aria-disabled="true">...</a></li>
+        {% endif %}
+        {% if current_page != end_page %}
+            <li class="page-item"><a class="page-link" href="{{ url_for('category_view', category_id=category_id, page=end_page) }}">{{ end_page }}</a></li>
+        {% endif %}
+        {% if next_url %}<li class="page-item"><a class="page-link" href="{{ next_url }}">Вперёд</a></li>{% endif %}
+    {% endif %}
+</ul>
+
+{% endblock %}

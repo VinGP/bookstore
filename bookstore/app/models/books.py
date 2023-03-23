@@ -12,7 +12,7 @@ class Book(SqlAlchemyBase):
     __tablename__ = "books"
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
-    isbn = sqlalchemy.Column(sqlalchemy.String(128))
+    isbn = sqlalchemy.Column(sqlalchemy.String(128), unique=True)
     title = sqlalchemy.Column(sqlalchemy.String(255))
     annotation = sqlalchemy.Column(sqlalchemy.Text())
     publication_date = sqlalchemy.Column(
@@ -42,14 +42,15 @@ class Book(SqlAlchemyBase):
     size = sqlalchemy.Column(sqlalchemy.String(128), default="0 x 0 x 0")
     weight = sqlalchemy.Column(sqlalchemy.Integer)  # вес
 
-    image_path = sqlalchemy.Column(sqlalchemy.String(128))
+    image_path = sqlalchemy.Column(sqlalchemy.String(250), nullable=True)
+
+    series = orm.relationship("Series", secondary="books_series")
 
 
 @listens_for(Book, "after_delete")
 def del_image(mapper, connection, target):
-    # if target.image:
-    try:
-        os.remove(os.path.join(file_path, target.image_path))
-
-    except OSError:
-        pass
+    if target.image_path:
+        try:
+            os.remove(os.path.join(file_path, target.image_path))
+        except OSError:
+            pass
