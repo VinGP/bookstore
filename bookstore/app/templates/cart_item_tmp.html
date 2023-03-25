@@ -1,0 +1,62 @@
+{% macro cart_item(book) -%}
+<div class="basket-item" data-id="{{ book.id }}" id="{{ book.id }}">
+    <div class="basket-item__wrapper">
+        <a class="item-a" href="#">
+            <div class="img-wrapper">
+                <img class="item-img lazyload"
+                     src="{{ url_for('static', filename='image/book/default.svg')  }}"
+                     alt="{{ book.title }}"
+                     data-src="{{ url_for('static', filename=book.image_path if book.image_path else 'image/book/default.svg')  }}">
+            </div>
+        </a>
+
+        <div class="basket-item__info">
+            <div class="basket-item__name">
+                <a href="#" class="basket-item__name-link">{{ book.title }}</a>
+
+            </div>
+            <div class="basket-item__author">
+                {% for author in book.authors %}
+                <a href="{{ url_for('author', id=author.id)  }}"
+                   class="basket-item__author-link">{{ format_author(author) }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="wrapper" style="display: flex;
+                                flex-direction: column;">
+            <div class="basket-item__price">
+                <div class="product-prices-block__counter">
+                    <div class="counter ">
+                        <button type="button"
+                                class="counter__button_minus counter__button">
+                            −
+                        </button>
+                        <input type="number" class="counter__input" value="{{ count_book_in_cart(book) }}"
+                               data-price="{{ book.price }}" disabled=""
+                               data-id="{{ book.id }}"
+                        >
+                        <button type="button"
+                                class="counter__button_plus   counter__button">
+                            +
+                        </button>
+                    </div>
+                </div>
+
+                <div class="product-prices-block__prices">
+                    <div class="product-prices-block__price subtotal">{{ book.price }} р.</div>
+                </div>
+            </div>
+            <div class="basket-item__btn-cart-del-wrapper">
+                <button type="button" class="basket-item__btn-cart-del" data-id="{{ book.id }}">
+                    <svg width="16" height="16" viewBox="0 0 16 16"
+                         xmlns="http://www.w3.org/2000/svg"
+                         class="basket-item__btn-cart-del__icon">
+                        <path d="M12.714 1.875h.411a.875.875 0 010 1.75H2.875a.875.875 0 110-1.75h2.819l.263-.511A.645.645 0 016.539 1h3.11c.248 0 .474.14.585.364l.249.511h2.231zm.715 11.813V4.438a.328.328 0 00-.327-.328H3.088a.328.328 0 00-.326.328v9.248c0 .725.53 1.313 1.252 1.313h8.108a1.31 1.31 0 001.307-1.313zm-8-7.244c.24 0 .38.197.38.438v6.125c0 .24-.14.437-.38.437s-.381-.196-.381-.437V6.882c0-.24.141-.438.38-.438zm2.666 0c.24 0 .381.197.381.438v6.125c0 .24-.141.437-.38.437-.24 0-.382-.196-.382-.437V6.882c0-.24.142-.438.381-.438zm2.667 0c.24 0 .38.197.38.438v6.125c0 .24-.14.437-.38.437s-.381-.196-.381-.437V6.882c0-.24.142-.438.381-.438z"></path>
+                    </svg>
+                    Удалить
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{%- endmacro %}

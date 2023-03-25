@@ -2,6 +2,7 @@ import datetime
 
 import sqlalchemy
 from flask_login import UserMixin
+from sqlalchemy import orm
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .db_session import SqlAlchemyBase
@@ -21,6 +22,13 @@ class User(SqlAlchemyBase, UserMixin):
     )
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     created_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
+
+    cart = orm.relationship(
+        "Cart",
+        lazy="subquery",
+        back_populates="user",
+        uselist=False,
+    )
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)

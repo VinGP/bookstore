@@ -32,10 +32,7 @@ class Book(SqlAlchemyBase):
         "Category", secondary="books_categories", backref="books"
     )
 
-    authors = orm.relationship(
-        "Author",
-        secondary="books_authors",
-    )
+    authors = orm.relationship("Author", secondary="books_authors", lazy="selectin")
 
     year = sqlalchemy.Column(sqlalchemy.Integer)
     number_of_pages = sqlalchemy.Column(sqlalchemy.Integer)

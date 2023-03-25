@@ -1,6 +1,7 @@
 from app import app, login_manager
 from app.forms.auth import LoginForm, RegisterForm
 from app.models import db_session
+from app.models.cart import Cart
 from app.models.users import User
 from flask import flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
@@ -10,6 +11,11 @@ from flask_login import current_user, login_required, login_user, logout_user
 def load_user(user_id):
     with db_session.create_session() as db_sess:
         return db_sess.query(User).get(user_id)
+
+
+@login_manager.unauthorized_handler
+def unauthorized_callback():
+    return redirect("/login?next=" + request.path)
 
 
 @app.route("/logout")
@@ -55,6 +61,7 @@ def register():
                     surname=form.surname.data,
                 )
                 user.set_password(form.password.data)
+                user.cart = Cart()
                 db_sess.add(user)
                 db_sess.commit()
                 login_user(user, remember=form.remember_me.data)

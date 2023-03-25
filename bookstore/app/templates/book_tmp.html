@@ -7,7 +7,7 @@
                         class="lazyload"
                         src="{{ url_for('static', filename='image/book/default.svg')  }}"
                         alt="{{ book.title }}"
-                        data-src="{{ url_for('static', filename=book.image_path if book.image_path else 'image/book/default.svg')  }}" >
+                        data-src="{{ url_for('static', filename=book.image_path if book.image_path else 'image/book/default.svg')  }}">
                 </a>
             </div>
             <div class="product__info">
@@ -16,14 +16,34 @@
                 <a href="{{ url_for('book', id=book.id) }}" class="product__name">
                     {{ book.title }}</a>
                 {% for author in book.authors %}
+
                 <a href="{{ url_for('author', id=author.id)  }}"
                    class="product__author">{{ format_author(author) }}</a>
                 {% endfor %}
             </div>
             <div class="product__btn-holder">
+
+                {% if current_user.is_authenticated and book_in_cart(book) %}
+                <a href='/cart' class='product__btn _add'>Оформить</a>
+                {% else %}
                 <button class="product__btn js-product__btn"
-                        data-id="{{ book.id }}">В корзину
+                        data-id="{{ book.id }}" id="{{ book.id }}">
+                    <span class="js-product__btn-text">
+                        В корзину
+                    </span>
+
+                    <div class="loadingio-spinner-ellipsis-t8puem0oyf9 js-product__btn-loading"
+                         style="display: none;">
+                        <div class="ldio-da2elqe6p98">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                    </div>
                 </button>
+                {% endif %}
             </div>
         </div>
     </div>

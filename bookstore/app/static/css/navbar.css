@@ -56,14 +56,14 @@
   width: 70%;
   min-width: 300px;
 
-    align-content: center;
-    flex-wrap: nowrap;
-    width: 70%;
-    /* min-width: 300px; */
-    flex-direction: row;
-    justify-content: center;
-    /* justify-items: center; */
-    align-items: center;
+  align-content: center;
+  flex-wrap: nowrap;
+  width: 70%;
+  /* min-width: 300px; */
+  flex-direction: row;
+  justify-content: center;
+  /* justify-items: center; */
+  align-items: center;
 }
 
 .search-icon {

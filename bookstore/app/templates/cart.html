@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block stylesheet %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/cart.css') }}">
+{% endblock %}
+
+{% import 'cart_item_tmp.html' as cart_item_tmp with context %}
+
+{% block content %}
+<h1 align="center">Корзина</h1>
+{% if count_books_in_cart() == 0 %}
+<div class="basket" id="basket">
+    <h2 align="center">Ваша корзина сейчас пуста</h2>
+</div>
+
+{% else %}
+<div class="row basket" id="basket">
+    <div class="col-lg-8 col-12">
+            <div class="basket-items ">
+                {% for book in books %}
+                    {{ cart_item_tmp.cart_item(book) }}
+                {% endfor %}
+            </div>
+    </div>
+    <div class="col-lg-4  col-12">
+        <div class="basket__side-bar">
+            <div class="basket-summary side-bar-summary-desktop__summary">
+                <div class="basket-summary__item _title" id="quantityOfGoods"> 3
+                    товара • 543.73 кг
+                </div>
+                <!--                <div class="basket-summary__item">-->
+                <!--                    <div class="basket-summary__desc"> Стоимость</div>-->
+                <!--                    <div class="basket-summary__val"><span class="nobr">791&nbsp;817 р.</span></div>-->
+                <!--                </div>-->
+                <!--                <div class="basket-summary__item">-->
+                <!--                    <div class="basket-summary__desc"> Сумма скидки</div>-->
+                <!--                    <div class="basket-summary__val"><span class="nobr">-204 р.</span></div>-->
+                <!--                </div>-->
+
+                <div class="basket-summary__item _total">
+
+                    <div class="basket-summary__desc"> Итого без доставки</div>
+                    <div class="basket-summary__val"><span
+                            id="total-price">{{ cart_total() }}</span>
+                        р.
+                    </div>
+                </div>
+                <div class="total-btn">
+                    <a href="{{ url_for('ordering') }}" type="button"
+                       class="btn-cart _large _block"> <span
+                            class="btn__content"> Перейти к оформлению </span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/jquery/jquery-3.6.4.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/cart.js') }}"></script>
+{% endblock %}
