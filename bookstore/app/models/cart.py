@@ -14,7 +14,9 @@ class Cart(SqlAlchemyBase):
         nullable=False,
     )
 
-    books = orm.relationship("CartBook", lazy="subquery", back_populates="cart")
+    books = orm.relationship(
+        "CartBook", lazy="subquery", back_populates="cart", cascade="all"
+    )
 
     user = orm.relationship("User", back_populates="cart")
 

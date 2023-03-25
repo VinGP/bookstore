@@ -28,6 +28,7 @@ class User(SqlAlchemyBase, UserMixin):
         lazy="subquery",
         back_populates="user",
         uselist=False,
+        cascade="all, delete-orphan",
     )
 
     def set_password(self, password):
