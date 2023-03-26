@@ -1,5 +1,6 @@
 
-const formatNumber = (x) => x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ' ');
+const formatNumber = (x) => x.toString().replace(/\B(?<!\.\d)(?=(\d{3})+(?!\d))/g, ' ');
+
 
 
 const calculateSeparateItem = (basketItem, action) => {
@@ -20,11 +21,11 @@ const calculateSeparateItem = (basketItem, action) => {
         contentType: 'application/json',
         data: JSON.stringify({ "id": id, "count": input.value }),
         success: function (data) {
-            console.log(data)
             if (data.success === true) {
                 $(`#${data['id']}`).find(".counter__input").val(data.count);
                 $(`#${data['id']}`).find(".subtotal").text(data.total_price_book + " руб.")
                 $(`#total-price`).text(data.total_cart_price)
+                $(`.js-basket-summary__item-weight`).text(data.cart_weight)
             }
         }
     });
@@ -68,9 +69,6 @@ function initCart() {
 function delItem() {
     // удаляю товар из корзины
     let id = $(this).attr('data-id');
-    console.log(id)
-
-
     $.ajax({
         type: 'post',
         url: "/delete_cart_book",
@@ -82,6 +80,8 @@ function delItem() {
             if (data.success === true) {
                 $(`#total-price`).text(data.total_cart_price)
                 update_cart_counter()
+                $(`.js-basket-summary__item-count`).text(data.count_books_in_cart)
+                $(`.js-basket-summary__item-weight`).text(data.cart_weight)
                 if (data.count_books_in_cart === 0) {
                     $(`#total-price`).text(data.total_cart_price)
                     $('.basket').html(`

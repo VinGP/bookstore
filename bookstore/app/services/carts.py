@@ -56,3 +56,18 @@ def get_count_books_in_cart(session, cart: Cart):
         .count()
     )
     return count
+
+
+def get_cart_weight(session, cart: Cart):
+    weight = 0
+    cart = (
+        session.query(Cart)
+        .filter(
+            Cart.id == cart.id,
+        )
+        .first()
+    )
+
+    for cart_book in cart.books:
+        weight += cart_book.book.weight * cart_book.count
+    return weight

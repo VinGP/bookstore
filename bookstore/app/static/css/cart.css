@@ -131,7 +131,7 @@ body {
 
 .basket-item__info {
   flex: 0 1 422px;
-  margin-right: 16px;
+  /*margin-right: 16px;*/
   display: flex;
   flex-direction: column;
 }
@@ -140,12 +140,14 @@ body {
 .basket-item__author-link {
   text-decoration: none;
   color: black;
+  overflow-wrap: anywhere;
 }
 
 .basket-item__name-link {
   /*font-weight: lighter;*/
   font-size: 15px;
   transition: color 0.3s;
+
   /*color: #7d8290;*/
 }
 

@@ -24,8 +24,16 @@
     <div class="col-lg-4  col-12">
         <div class="basket__side-bar">
             <div class="basket-summary side-bar-summary-desktop__summary">
-                <div class="basket-summary__item _title" id="quantityOfGoods"> 3
-                    товара • 543.73 кг
+                <div class="basket-summary__item _title" id="quantityOfGoods">
+
+                    Количество товаров:
+                    <span class="js-basket-summary__item-count">
+                        {{ count_books_in_cart() }}
+                    </span>
+                    •
+                    <span class="js-basket-summary__item-weight">
+                        {{ cart_weight() }}
+                    </span> кг
                 </div>
                 <!--                <div class="basket-summary__item">-->
                 <!--                    <div class="basket-summary__desc"> Стоимость</div>-->

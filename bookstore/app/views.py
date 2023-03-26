@@ -9,6 +9,7 @@ from app.services.carts import (
     add_book_to_cart,
     delete_book_in_cart,
     get_cart_total_price,
+    get_cart_weight,
     get_count_books_in_cart,
     update_count_book_in_cart,
 )
@@ -18,6 +19,10 @@ from flask_login import current_user, login_required
 from sqlalchemy_pagination import paginate
 
 from . import app, babel
+
+
+def format_weight(n: int):
+    return round(n / 1000, 2)
 
 
 @app.context_processor
@@ -48,6 +53,10 @@ def utility_processor():
                 return count[0]
             return 0
 
+    # def format_number(n: int | str):
+    #     import re
+    #     return re.sub(r"/\B(?<!\.\d)(?=(\d{3})+(?!\d))/g", " ", str(n))
+
     def count_books_in_cart():
         if current_user.is_authenticated:
             with db_session.create_session() as db_sess:
@@ -67,6 +76,12 @@ def utility_processor():
                     return True
         return False
 
+    def cart_weight():
+        with db_session.create_session() as db_sess:
+
+            weight = format_weight(get_cart_weight(db_sess, current_user.cart))
+            return weight
+
     return dict(
         format_author=format_author,
         main_categorise=main_categorise,
@@ -74,6 +89,7 @@ def utility_processor():
         cart_total=cart_total,
         count_book_in_cart=count_book_in_cart,
         count_books_in_cart=count_books_in_cart,
+        cart_weight=cart_weight,
     )
 
 
@@ -254,7 +270,7 @@ def delete_cart_book():
             delete_book_in_cart(session=db_sess, cart=current_user.cart, book=book)
             total_cart_price = get_cart_total_price(db_sess, current_user.cart)
             count_books_in_cart = get_count_books_in_cart(db_sess, current_user.cart)
-
+            cart_weight = format_weight(get_cart_weight(db_sess, current_user.cart))
             return jsonify(
                 dict(
                     msg=True,
@@ -262,6 +278,7 @@ def delete_cart_book():
                     success=True,
                     total_cart_price=total_cart_price,
                     count_books_in_cart=count_books_in_cart,
+                    cart_weight=cart_weight,
                 )
             )
     return jsonify(dict(success=False, redirect=url_for("register")))
@@ -277,11 +294,9 @@ def update_count_book_in_cart_view():
                 db_sess, book=book, cart=current_user.cart, count=data["count"]
             )
             total_price_book = cart_item.count * cart_item.book.price
-
             total_cart_price = get_cart_total_price(db_sess, current_user.cart)
-
             count_books_in_cart = get_count_books_in_cart(db_sess, current_user.cart)
-
+            cart_weight = format_weight(get_cart_weight(db_sess, current_user.cart))
             return jsonify(
                 success=True,
                 id=data["id"],
@@ -289,6 +304,7 @@ def update_count_book_in_cart_view():
                 total_price_book=total_price_book,
                 total_cart_price=total_cart_price,
                 count_books_in_cart=count_books_in_cart,
+                cart_weight=cart_weight,
             )
     return jsonify(dict(success=False, redirect=url_for("register")))
 
@@ -298,6 +314,5 @@ def get_count_books_in_cart_view():
     if current_user.is_authenticated:
         with db_session.create_session() as db_sess:
             count = get_count_books_in_cart(db_sess, current_user.cart)
-            print("count", count)
             return jsonify(dict(success=True, count=count))
     return jsonify(dict(success=True, count=0))
