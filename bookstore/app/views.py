@@ -78,7 +78,6 @@ def utility_processor():
 
     def cart_weight():
         with db_session.create_session() as db_sess:
-
             weight = format_weight(get_cart_weight(db_sess, current_user.cart))
             return weight
 
@@ -139,7 +138,7 @@ def index():
 @app.route("/category/<int:category_id>")
 def category_view(category_id):
     page = request.args.get("page", 1, type=int)
-    per_page = 48
+    per_page = 24
 
     with db_session.create_session() as db_sess:
         category = db_sess.query(Category).filter(Category.id == category_id).first()
@@ -242,9 +241,11 @@ def ordering():
 @app.route("/cart")
 @login_required
 def cart():
-    books = [b.book for b in current_user.cart.books]
+    books = sorted(
+        [(cb, cb.book) for cb in current_user.cart.books], key=lambda x: x[1].title
+    )
 
-    return render_template("cart.html", books=books)
+    return render_template("cart.html", books=books, title="Корзина")
 
 
 # login_required

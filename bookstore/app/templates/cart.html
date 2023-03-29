@@ -16,8 +16,8 @@
 <div class="row basket" id="basket">
     <div class="col-lg-8 col-12">
             <div class="basket-items ">
-                {% for book in books %}
-                    {{ cart_item_tmp.cart_item(book) }}
+                {% for cart_book, book in books %}
+                    {{ cart_item_tmp.cart_item(cart_book, book) }}
                 {% endfor %}
             </div>
     </div>

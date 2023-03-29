@@ -1,4 +1,4 @@
-{% macro cart_item(book) -%}
+{% macro cart_item(cart_book, book) -%}
 <div class="basket-item" data-id="{{ book.id }}" id="{{ book.id }}">
     <div class="basket-item__wrapper">
         <a class="item-a" href="#">
@@ -43,7 +43,7 @@
                 </div>
 
                 <div class="product-prices-block__prices">
-                    <div class="product-prices-block__price subtotal">{{ book.price }} руб.</div>
+                    <div class="product-prices-block__price subtotal">{{ book.price * cart_book.count }} руб.</div>
                 </div>
             </div>
             <div class="basket-item__btn-cart-del-wrapper">

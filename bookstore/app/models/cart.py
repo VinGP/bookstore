@@ -15,7 +15,10 @@ class Cart(SqlAlchemyBase):
     )
 
     books = orm.relationship(
-        "CartBook", lazy="subquery", back_populates="cart", cascade="all"
+        "CartBook",
+        lazy="subquery",
+        back_populates="cart",
+        cascade="all",
     )
 
     user = orm.relationship("User", back_populates="cart")
@@ -34,6 +37,7 @@ class CartBook(SqlAlchemyBase):
         sqlalchemy.ForeignKey("books.id"),
         primary_key=True,
     )
-    book = orm.relationship("Book", lazy="subquery", backref="carts")
     count = sqlalchemy.Column(sqlalchemy.Integer, default=1)
+
+    book = orm.relationship("Book", lazy="subquery", backref="carts")
     cart = orm.relationship("Cart", back_populates="books")

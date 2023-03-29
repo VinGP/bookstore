@@ -3,6 +3,37 @@ const formatNumber = (x) => x.toString().replace(/\B(?<!\.\d)(?=(\d{3})+(?!\d))/
 
 
 
+function debounce(func, delay) {
+  let timerId;
+
+  return function debouncedFunc(...args) {
+  console.log(args)
+    clearTimeout(timerId);
+    timerId = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+}
+
+update_count_book_in_cart = debounce((id) => {
+ $.ajax({
+        type: 'post',
+        url: "/update_count_book_in_cart",
+        context: document.body,
+        contentType: 'application/json',
+        data: JSON.stringify({ "id": id, "count": $(`#${id}`).find(".counter__input").val() }),
+        success: function (data) {
+            if (data.success === true) {
+                $(`#${data['id']}`).find(".counter__input").val(data.count);
+                $(`#${data['id']}`).find(".subtotal").text(data.total_price_book + " руб.")
+                $(`#total-price`).text(data.total_cart_price)
+                $(`.js-basket-summary__item-weight`).text(data.cart_weight)
+            }
+        }
+    });}
+, 250)
+
+
 const calculateSeparateItem = (basketItem, action) => {
     const input = basketItem.querySelector('.counter__input')
     id = input.dataset.id
@@ -14,21 +45,7 @@ const calculateSeparateItem = (basketItem, action) => {
             input.value--;
             break;
     }
-    $.ajax({
-        type: 'post',
-        url: "/update_count_book_in_cart",
-        context: document.body,
-        contentType: 'application/json',
-        data: JSON.stringify({ "id": id, "count": input.value }),
-        success: function (data) {
-            if (data.success === true) {
-                $(`#${data['id']}`).find(".counter__input").val(data.count);
-                $(`#${data['id']}`).find(".subtotal").text(data.total_price_book + " руб.")
-                $(`#total-price`).text(data.total_cart_price)
-                $(`.js-basket-summary__item-weight`).text(data.cart_weight)
-            }
-        }
-    });
+    update_count_book_in_cart(id)
 };
 
 
