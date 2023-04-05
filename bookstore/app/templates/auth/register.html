@@ -1,60 +1,103 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Регистрация</h1>
-<form action="" method="post">
-    {{ form.hidden_tag() }}
-    <p>
-        {{ form.email.label }}<br>
-        {{ form.email(class="form-control", type="email") }}<br>
-        {% for error in form.email.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
-    </p>
-        <p>
-        {{ form.name.label }}<br>
-        {{ form.name(class="form-control") }}<br>
-        {% for error in form.name.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
-    </p>
-        <p>
-        {{ form.surname.label }}<br>
-        {{ form.surname(class="form-control") }}<br>
-        {% for error in form.surname.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
-    </p>
-    <p>
-        {{ form.password.label }}<br>
-        {{ form.password(class="form-control", type="password") }}<br>
-        {% for error in form.password.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
-    </p>
-    <p>
-        {{ form.password_again.label }}<br>
-        {{ form.password_again(class="form-control", type="password") }}<br>
-        {% for error in form.password_again.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
-    </p>
-
-    <p>
 
 
-    </p>
-    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
-    {{message}}
-</form>
+<!--<h1 align="center">Регистрация</h1>-->
+<div class="w-100 p-2 d-flex justify-content-center pb-4">
+    <div style="width: 26rem;" class="rounded shadow p-3 mb-5 bg-white rounded">
+        <ul class="nav nav-pills nav-justified mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link"
+                   href="{{ url_for('login', next=request.args.get('next')) }}">Вход</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active"
+                   href="{{ url_for('register', next=request.args.get('next')) }}">Регистрация</a>
+            </li>
+        </ul>
+        <form action="{{ url_for('register', next=request.args.get('next')) }}"
+              method="post">
+            {{ form.hidden_tag() }}
+
+
+            <!-- Name input -->
+            <div class="form-outline mb-4">
+                {{ form.email(class="form-control", type="email") }}
+                {{ form.email.label(class="form-label") }}
+                {% for error in form.email.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Username input -->
+            <div class="form-outline mb-4">
+                {{ form.name(class="form-control") }}
+                {{ form.name.label(class="form-label") }}
+                {% for error in form.name.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Email input -->
+            <div class="form-outline mb-4">
+                {{ form.surname(class="form-control") }}
+                {{ form.surname.label(class="form-label") }}
+                {% for error in form.surname.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+            </div>
+
+            {% if message %}
+            <div class="alert alert-danger" role="alert">
+                {{ message }}
+            </div>
+            {% endif %}
+            <!-- Password input -->
+            <div class="form-outline mb-4">
+                {{ form.password(class="form-control") }}
+                {{ form.password.label(class="form-label", type="password") }}
+                {% for error in form.password.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="form-outline mb-4">
+                {{ form.password_again(class="form-control") }}
+                {{ form.password_again.label(class="form-label", type="password") }}
+                {% for error in form.password_again.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Checkbox -->
+            <!--            <div class="form-check d-flex justify-content-center mb-4">-->
+            <!--                <input class="form-check-input me-2" type="checkbox" value=""-->
+            <!--                       id="registerCheck" checked-->
+            <!--                       aria-describedby="registerCheckHelpText"/>-->
+            <!--                <label class="form-check-label" for="registerCheck">-->
+            <!--                    I have read and agree to the terms-->
+            <!--                </label>-->
+            <!--            </div>-->
+
+            <!-- Submit button -->
+            {{ form.submit(type="submit", class="btn btn-primary btn-block w-100")
+            }}
+
+        </form>
+
+    </div>
+</div>
+
+
 {% endblock %}

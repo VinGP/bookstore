@@ -14,11 +14,13 @@ from app.services.carts import (
     update_count_book_in_cart,
 )
 from app.services.catigories import get_main_categorise
-from flask import jsonify, render_template, request, session, url_for
+from app.services.mail import confirm_mail, send_confirm_mail
+from flask import abort, jsonify, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_required
 from sqlalchemy_pagination import paginate
 
 from . import app, babel
+from .services.users import get_user_by_id
 
 
 def format_weight(n: int):
@@ -317,3 +319,50 @@ def get_count_books_in_cart_view():
             count = get_count_books_in_cart(db_sess, current_user.cart)
             return jsonify(dict(success=True, count=count))
     return jsonify(dict(success=True, count=0))
+
+
+@app.route("/unconfirmed_mail/<int:id>")
+def unconfirmed_mail(id):
+    with db_session.create_session() as db_sess:
+        user = get_user_by_id(db_sess, id)
+        if user and not user.email_confirmed:
+            return render_template(
+                "mail/unconfirmed_mail.html",
+                title="Проверьте свою электронную почту",
+                email=user.email,
+                id=id,
+                recent_mail_button=True,
+            )
+    return redirect(url_for("index"))
+
+
+@app.route("/recent_confirm_mail/<int:id>")
+def recent_confirm_mail(id):
+    with db_session.create_session() as db_sess:
+        user = get_user_by_id(db_sess, id)
+        if user and not user.email_confirmed:
+            send_confirm_mail(user)
+            return render_template(
+                "mail/unconfirmed_mail.html",
+                title="Проверьте свою электронную почту",
+                email=user.email,
+                id=id,
+                recent_mail_button=False,
+            )
+    return redirect(url_for("index"))
+
+
+@app.route("/t")
+def t():
+    abort(404)
+    return url_for("unconfirmed_mail", email="123")
+
+
+@app.route("/confirm_mail/<token>")
+def confirm_mail_view(token):
+    email = confirm_mail(token)
+    if email:
+        return render_template(
+            "mail/success_confirm_mail.html", title="Почта подтверждена", email=email
+        )
+    abort(404)

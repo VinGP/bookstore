@@ -23,6 +23,11 @@ class User(SqlAlchemyBase, UserMixin):
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     created_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
 
+    email_confirmed = sqlalchemy.Column(
+        sqlalchemy.Boolean, nullable=False, default=False
+    )
+    is_admin = sqlalchemy.Column(sqlalchemy.Boolean, nullable=False, default=False)
+
     cart = orm.relationship(
         "Cart",
         lazy="subquery",

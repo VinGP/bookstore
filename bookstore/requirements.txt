@@ -28,4 +28,5 @@ Flask-Mail==0.9.1
 blinker==1.5
 Pillow==9.4.0
 sqlalchemy-pagination==0.0.2
+PyJWT==2.6.0
 

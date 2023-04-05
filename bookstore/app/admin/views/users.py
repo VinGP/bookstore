@@ -9,16 +9,32 @@ class UserView(MyBaseView):
     column_hide_backrefs = False
     column_display_all_relations = True
     column_searchable_list = ["id", "name", "surname", "email", "phone_number"]
-    # column_filters = ["author", "publisher"]
-    form_columns = ["name", "surname", "email", "phone_number"]
+    form_columns = [
+        "name",
+        "surname",
+        "email",
+        "phone_number",
+        "email_confirmed",
+        "is_admin",
+    ]
 
-    column_list = ("id", "name", "surname", "email", "phone_number")
+    column_list = (
+        "id",
+        "name",
+        "surname",
+        "email",
+        "phone_number",
+        "email_confirmed",
+        "is_admin",
+    )
     column_labels = dict(
         id="ID",
         name="Имя",
         surname="Фамилия",
         email="Электронная почта",
         phone_number="Номер телефона",
+        email_confirmed="Почта подтверждена",
+        is_admin="Является администратором",
     )
 
     form_widget_args = {
