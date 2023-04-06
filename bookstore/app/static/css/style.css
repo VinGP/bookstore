@@ -133,7 +133,7 @@ body {
   outline: 0;
   text-decoration: none;
   -webkit-appearance: button;
-  max-width: 180px;
+  /*max-width: 180px;*/
   background-color: #fff;
   color: #242424;
   border: 1px solid #c7ccd7;

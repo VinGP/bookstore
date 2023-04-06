@@ -31,7 +31,14 @@ def format_weight(n: int):
 def utility_processor():
     def format_author(author: Author):
         return f"{author.first_name} {author.second_name[0]}.{' ' + author.surname[0] + '.' if author.surname else ''}"
-
+    def get_authors_books(authors):
+        res = []
+        for author in authors:
+            res += author.books[:4]
+        print(res)
+        if len(res) > 1:
+            return res
+        return None
     def main_categorise():
         with db_session.create_session() as db_sess:
             return get_main_categorise(db_sess)
@@ -91,6 +98,7 @@ def utility_processor():
         count_book_in_cart=count_book_in_cart,
         count_books_in_cart=count_books_in_cart,
         cart_weight=cart_weight,
+        get_authors_books=get_authors_books
     )
 
 
@@ -189,18 +197,29 @@ def category_view(category_id):
 
 
 @app.route("/book/<int:id>")
-def book(id: int):
+def book(id):
     with db_session.create_session() as db_sess:
         book = db_sess.query(Book).filter(Book.id == id).first()
-        if book:
-            res = {
-                "id": book.id,
-                "title": book.title,
-                "author": book.author.__repr__(),
-                "isbn": book.isbn,
-            }
-            return jsonify({"res": res})
-        return jsonify({"res": {}})
+
+        parent_categories = Category.get_parents_list(db_sess, book.categories[0].id)[
+            ::-1
+        ]
+        return render_template(
+            "book.html",
+            book=book,
+            title=book.title,
+            parent_categories=parent_categories,
+        )
+
+
+@app.route("/publisher/<int:id>")
+def publisher(id):
+    return f"publisher: {id}"
+
+
+@app.route("/series/<int:id>")
+def series(id):
+    return "series"
 
 
 @app.route("/author/<int:id>")

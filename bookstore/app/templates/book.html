@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+
+{% import 'carousel_tmp.html' as carousel_tmp with context %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/book.css') }}">
+
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/owlcarousel/owl.carousel.min.css') }}">
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/owlcarousel/owl.theme.default.min.css') }}">
+{% endblock %}
+{% block scripts_head %}
+<script src="{{ url_for('static', filename='js/owlcarousel/owl.carousel.min.js') }}"></script>
+{% endblock %}
+
+
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb" style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);">
+      {% for category in parent_categories %}
+    <li class="breadcrumb-item">
+        <a href="{{ url_for('category_view', category_id=category.id)  }}">{{ category.name }}</a>
+    </li>
+      {% endfor %}
+  </ol>
+</nav>
+<div class="row">
+    <div class="col-lg-3 col-sm-12 d-flex">
+
+        <div class=" owl-carousel owl-theme" id="owl">
+            <div>
+                <img class="d-block w-100 "
+                     src="{{ url_for('static', filename=book.image_path)  }}"
+                     alt="{{ book.title }}"
+                     data-src="{{ url_for('static', filename=book.image_path if book.image_path else 'image/book/default.svg')  }}">
+            </div>
+            {% for img in book.other_images %}
+            <div>
+                <img class="d-block w-100 lazyload"
+                     src="{{ url_for('static', filename='image/book/default.svg')  }}"
+                     alt="{{ book.title }}"
+                     data-src="{{ url_for('static', filename=img.filename) }}"></div>
+            {% endfor %}
+        </div>
+        <script>
+        $(document).ready(function () {
+            $('owl-carousel').owlCarousel();
+        });
+        $('#owl').owlCarousel({
+            loop: true,
+            margin: 5,
+<!--                        nav: true,-->
+            responsive: {
+                0: {
+                    items: 1
+                },
+                600: {
+                    items: 1
+                },
+                800: {
+                    items: 1
+                },
+
+                1000: {
+                    items: 1
+                },
+                1200: {
+                    items: 1
+                }
+            }
+        })
+
+
+
+
+
+
+        </script>
+    </div>
+    <div class="col-lg-9 col-sm-12" style=" ">
+        <h1 class="title">{{ book.title }}</h1>
+        <div class="row">
+            <div class="col-md-7 col-sm-12" style=" ">
+<!--                <h3>Характеристики</h3>-->
+
+                <table>
+                    <tr>
+                        <td style="color: grey">ID товара</td>
+                        <td>{{ book.id }}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: grey">ISBN</td>
+                        <td>{{ book.isbn }}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: grey">Год издания</td>
+                        <td>{{ book.year }}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: grey">Автор</td>
+                        <td>
+                            {% for author in book.authors %}
+                            <a href="{{ url_for('author', id=author.id)  }}"
+                               class="book_info__link">{{ format_author(author) }}</a>
+                            {% if not loop.last %},{% endif %}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="color: grey">Количество страниц</td>
+                        <td>{{ book.number_of_pages }}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: grey">Размер</td>
+                        <td>{{ book.size }}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: grey">Вес</td>
+                        <td>{{ book.weight }}</td>
+                    </tr>
+                    {% if book.series %}
+                    <tr>
+                        <td style="color: grey">Серия</td>
+                        <td><a href="{{ url_for('series', id=book.series[0].id)  }}" class="book_info__link">{{ book.series[0].name }}</a></td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <td style="color: grey">Издательство</td>
+                        <td><a href="{{ url_for('publisher', id=book.publisher.id)  }}" class="book_info__link">{{ book.publisher.name }}</a></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="col-md-5 col-sm-12">
+                <div class="product-price_block">
+                    {% if book.available_quantity == 0 %}
+                    <div class="availability" style="color: grey">Нет в наличии</div>
+                    {% else %}
+                    <div class="availability" style="color: #6ebc63">В наличии</div>
+                    {% endif %}
+                    <div class="product-price_block__price">
+                        <div class="price">{{ book.price }} руб.</div>
+                    </div>
+
+                    <div class="product__btn-holder">
+                        <!--                        {% if book.available_quantity == 0 %}-->
+                        <!--                        <button class="product__btn js-product__btn _disabled"-->
+                        <!--                                data-id="{{ book.id }}" disabled>В-->
+                        <!--                            корзину-->
+                        <!--                        </button>-->
+                        <!--                        {% else %}-->
+                        <!--                        <button class="product__btn js-product__btn _active"-->
+                        <!--                                data-id="{{ book.id }}">В корзину-->
+                        <!--                        </button>-->
+                        <!--                        {% endif %}-->
+                        {% if current_user.is_authenticated and book_in_cart(book) %}
+                        <a href='/cart' class='product__btn _add'>Оформить</a>
+                        {% else %}
+                        <button class="product__btn js-product__btn"
+                                data-id="{{ book.id }}" id="{{ book.id }}">
+                    <span class="js-product__btn-text">
+                        В корзину
+                    </span>
+
+                            <div class="loadingio-spinner-ellipsis-t8puem0oyf9 js-product__btn-loading"
+                                 style="display: none;">
+                                <div class="ldio-da2elqe6p98">
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                </div>
+                            </div>
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<div class="description">
+    <p style="color:grey;margin: 0">Аннотация</p>
+    <p class="description__text">{{ book.annotation }}
+    </p>
+</div>
+{% set other_author_books = get_authors_books(book.authors) %}
+{% if other_author_books %}
+<h3>Книги автора</h3>
+<div class="col-12">
+    {{ carousel_tmp.carousel(other_author_books, 1, False) }}
+</div>
+{% endif %}
+
+
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endblock %}

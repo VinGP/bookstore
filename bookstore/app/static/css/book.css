@@ -1,0 +1,131 @@
+td, th {
+    padding-left: 20px;
+
+}
+
+td {
+    padding-bottom: 10px;
+}
+
+tr > td:first-child {
+    /* padding: 0; */
+}
+
+.product-price_block {
+    /*width: 320px;*/
+    padding: 15px;
+    /*margin: 0 auto;*/
+    background-color: rgba(38, 169, 224, 0.1);
+    height: fit-content;
+    border-radius: 10px;
+        position: sticky;
+    top: 1em;
+}
+
+.product-price_block__price {
+
+}
+
+.product-price_block__price .price {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.product__btn {
+    position: relative;
+    text-transform: none;
+    margin: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    text-align: center;
+    justify-content: center;
+    border-radius: 4px;
+
+    overflow: hidden;
+    transition: opacity .3s, color .3s, background-color .3s, border-color .3s;
+    cursor: pointer;
+    font-family: inherit;
+    outline: 0;
+    text-decoration: none;
+    -webkit-appearance: button;
+    /*max-width: 100%;*/
+    background-color: #fff;
+    color: #242424;
+    border: 0;
+    /* height: 27px; */
+    line-height: 45px;
+    padding: initial;
+    font-weight: 500;
+    display: flex;
+    width: 100%;
+}
+
+._active:hover {
+    background-color: #3d70b2;
+    color: #fff;
+}
+
+.availability {
+    margin-bottom: 5px;
+
+}
+
+._disabled {
+    color: grey;
+    cursor: auto;
+}
+
+._add {
+    background: #3d70b2;
+    color: white;
+}
+
+._add:hover {
+    background-color: #4186df;
+    color: white;
+
+}
+
+/*._disabled:hover{*/
+
+/*}*/
+
+.title {
+    font-size: 19px;
+    line-height: 28px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.description__text {
+    font-size: 15px;
+    color: #333333;
+    line-height: 28px;
+}
+
+.description {
+    margin: 0;
+    margin-top: 10px;
+}
+
+@media screen and (max-device-width: 400px) {
+    /*@media (min-width: 250px max-width: 400px) {*/
+    .product-price_block {
+        margin: 0 auto;
+    }
+}
+
+.owl-carousel .owl-stage {
+  display: flex;
+  align-items: center;
+}
+
+.owl-carousel .caption {
+  text-align: center;
+}
+
+.book_info__link{
+text-decoration: none;
+color: gray;
+}
