@@ -49,7 +49,7 @@
             $('owl-carousel').owlCarousel();
         });
         $('#owl').owlCarousel({
-            loop: true,
+            loop: {% if book.other_images %}true{% else %}false{% endif %},
             margin: 5,
 <!--                        nav: true,-->
             responsive: {
@@ -128,6 +128,7 @@
                     {% endif %}
                     <tr>
                         <td style="color: grey">Издательство</td>
+                        {{ book.publisher.name }}
                         <td><a href="{{ url_for('publisher', id=book.publisher.id)  }}" class="book_info__link">{{ book.publisher.name }}</a></td>
                     </tr>
                 </table>

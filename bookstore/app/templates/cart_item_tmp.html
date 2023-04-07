@@ -12,7 +12,7 @@
 
         <div class="basket-item__info">
             <div class="basket-item__name">
-                <a href="#" class="basket-item__name-link">{{ book.title }}</a>
+                <a href="{{ url_for('book', id=book.id)  }}" class="basket-item__name-link">{{ book.title }}</a>
 
             </div>
             <div class="basket-item__author">

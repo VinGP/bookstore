@@ -1,6 +1,6 @@
 {% import 'book_tmp.html' as book_tmp with context %}
-{{ set }}
-{% macro carousel(books, n=1) -%}
+
+{% macro carousel(books, n=1, loop_item=True) -%}
     <div class=" owl-carousel owl-theme" id="owl-{{ n }}">
         {% for book in books %}
             {{ book_tmp.book(book) }}
@@ -11,7 +11,7 @@
             $('owl-carousel').owlCarousel();
         });
         $('#owl-{{ n }}').owlCarousel({
-            loop: true,
+            loop: {% if loop_item %} true {% else %} false {% endif %},
             margin: 5,
             <!--            nav: true,-->
             responsive: {
