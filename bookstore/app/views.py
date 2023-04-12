@@ -410,29 +410,10 @@ def search():
     q = request.args.get("q", None)
     page = request.args.get("page", 1, type=int)
     per_page = 24
-
-    # if form.validate_on_submit():
     if q := q.strip():
-        # q = form.q.data
-        # res = db_sess.query(Book).filter(
-        #     Book.title.match(q) | Book.authors.any(
-        #         Author.second_name.match(q) | Author.first_name.match(
-        #             q)) | Book.publisher.has(Publisher.name.match(q))).all()
-        # res = db_sess.query(Book).filter(text("similarity(name, :search_term) > 0.5")).all()
-        # ). \
-        #         params(search_term=search_term). \
-        #             order_by(text("similarity(name, :search_term) DESC")). \
-        #             all()
-        # res = db_sess.query(Book).filter(
-        #     text("levenshtein(title, :search_term) < 10")). \
-        #     params(search_term=q). \
-        #     order_by(text("levenshtein(title, :search_term) DESC")). \
-        #     all()
         books, total = Book.search(q, page, per_page)
 
         url_maker = page_url_maker("search", q=q)
-
-        # pagination = paginate(books, page, per_page)
 
         end_page = total // per_page + bool(total % per_page)
 
