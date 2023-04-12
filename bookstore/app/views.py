@@ -47,10 +47,10 @@ def utility_processor():
     def get_authors_books(authors):
         res = []
         for author in authors:
-            res += author.books[:4]
+            res += author.books[:10]
         print(res)
         if len(res) > 1:
-            return res
+            return res[:15]
         return None
 
     def main_categorise():

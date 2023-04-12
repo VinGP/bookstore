@@ -1,5 +1,6 @@
 from random import randint
 
+import click
 from app import app
 from app.models.db_session import create_session
 from app.services.authors import create_author
@@ -8,6 +9,7 @@ from app.services.catigories import add_sub_category, create_category
 from app.services.images import create_image
 from app.services.publishers import create_publisher
 from app.services.series import create_series
+from app.services.users import create_user
 from flask.cli import FlaskGroup
 
 cli = FlaskGroup(app)
@@ -16,6 +18,31 @@ cli = FlaskGroup(app)
 @cli.command("create_db")
 def create_db():
     pass
+
+
+@cli.command("add_admin")
+@click.argument("name")
+@click.argument("surname")
+@click.argument("email")
+@click.argument("password")
+def add_admin(name, surname, email, password):
+    try:
+        with create_session() as db_sess:
+            create_user(
+                db_sess,
+                name,
+                surname,
+                email,
+                password,
+                is_admin=True,
+                email_confirmed=True,
+            )
+            click.echo(
+                f"Администратор создан.\n" f"email: {email}\n" f"password: {password}"
+            )
+    except Exception as e:
+        print(e)
+        print("Администратор не создан, возможно email уже занят.")
 
 
 @cli.command("insert_db_data")
@@ -107,3 +134,5 @@ if __name__ == "__main__":
 # Создание копии базы данных из которой можно будет создать базу:
 # pg_dump -U hello_flask -p 54320 -d hello_flask_dev  -f ./d.sql
 # Запуск: python manage.py --env-file .env.dev run -h 0.0.0.0
+
+# docker-compose exec web python manage.py add_admin admin admin admin@admin admin

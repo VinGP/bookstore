@@ -45,6 +45,17 @@ make dev
 docker-compose exec web python -m alembic upgrade head
 ```
 
+#### 6) Добавляем администратора
+```shell
+docker-compose exec web python manage.py add_admin admin admin admin@admin admin
+```
+
+#### 7) Добавление данных в базу
+По желанию вы можете сразу заполнить базу данных. Файл data.json должен находиться рядом с файлом bookstore/manage.py, картинки необходимо поместить в папку bookstore/app/static/image/book/
+```shell
+docker-compose exec web python manage.py insert_db_data
+```
+
 #### Для разработки:
 
 После выполнения пунктов для локального запуска, надо выполнить следующие команды:

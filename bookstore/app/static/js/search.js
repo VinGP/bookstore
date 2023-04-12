@@ -1,18 +1,6 @@
-const loadAutocomplete = (q) => {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', '/autocomplete/' + q, false,);
-
-    xhr.send();
-    let response = JSON.parse(xhr.responseText);
-    return response.data
-
-
-}
-
 function debounce(callee, timeoutMs) {
 
     return function perform(...args) {
-        console.log("get")
 
         let previousCall = this.lastCall
 
@@ -27,8 +15,6 @@ function debounce(callee, timeoutMs) {
     }
 }
 
-
-db_load = debounce(loadAutocomplete, 250)
 function autocomplete() {
 
     let currentFocus;
@@ -36,7 +22,6 @@ function autocomplete() {
     let inp = document.getElementById("searchInput")
 
     inp.addEventListener("input", debounce(function (e) {
-        console.log("input")
         inp = document.getElementById("searchInput")
         let a, b, i, val = inp.value;
 

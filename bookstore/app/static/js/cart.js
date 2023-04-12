@@ -1,22 +1,82 @@
-
 const formatNumber = (x) => x.toString().replace(/\B(?<!\.\d)(?=(\d{3})+(?!\d))/g, ' ');
 
 
+function hash(string) {
+    string = string.toString();
+    let hash = 0;
+    for (let i = 0; i < string.length; i++) {
+        hash = (((hash << 5) - hash) + string.charCodeAt(i)) & 0xFFFFFFFF;
+    }
 
-function debounce(func, delay) {
-  let timerId;
-
-  return function debouncedFunc(...args) {
-  console.log(args)
-    clearTimeout(timerId);
-    timerId = setTimeout(() => {
-      func.apply(this, args);
-    }, delay);
-  };
+    return hash;
 }
 
-update_count_book_in_cart = debounce((id) => {
- $.ajax({
+function object(obj) {
+    let result = 0;
+    for (let property in obj) {
+        if (obj.hasOwnProperty(property)) {
+            result += hash(property + hashCode(obj[property]));
+        }
+    }
+
+    return result;
+}
+
+function hashCode(value) {
+    const types =
+    {
+        'string': hash,
+        'number': hash,
+        'boolean': hash,
+        'object': object
+    };
+    const type = typeof value;
+
+    return value != null && types[type] ? types[type](value) + hash(type) : 0;
+}
+
+function isDict(obj) {
+    return typeof obj === "object" && obj !== null && !(obj instanceof Array) && !(obj instanceof Date);
+}
+
+
+function withUniqueArguments(func, delay) {
+    const map = [], ids = {};
+
+    return function wrapper() {
+        const args = [];
+        let uniqueArgumentKey = undefined;
+
+        for (let key = 0; key < arguments.length; key++) {
+            const arg = arguments[key];
+
+            if (isDict(arg) && "uniqueArgumentKey" in arg)
+                uniqueArgumentKey = arg["uniqueArgumentKey"];
+            else
+                args.push(arg);
+        }
+
+        const hash = hashCode(uniqueArgumentKey || args);
+
+        if (!map.includes(hash))
+            map.push(hash);
+
+        clearTimeout(ids[hash]);
+        ids[hash] = setTimeout(() => {
+            func(...args);
+            clearTimeout(ids[hash]);
+            delete map[map.indexOf(hash)];
+            ids[hash] = 0;
+        }, delay);
+    };
+}
+
+
+
+
+function update_count_book_in_cart(id) {
+    $(`#${id}`).find(".counter__button").prop('disabled', true)
+    $.ajax({
         type: 'post',
         url: "/update_count_book_in_cart",
         context: document.body,
@@ -29,10 +89,13 @@ update_count_book_in_cart = debounce((id) => {
                 $(`#total-price`).text(data.total_cart_price)
                 $(`.js-basket-summary__item-weight`).text(data.cart_weight)
             }
+            $(`#${id}`).find(".counter__button").prop('disabled', false)
         }
-    });}
-, 250)
+    });
+}
 
+
+update_count_book_in_cart_debounce = withUniqueArguments(update_count_book_in_cart, 500)
 
 const calculateSeparateItem = (basketItem, action) => {
     const input = basketItem.querySelector('.counter__input')
@@ -45,7 +108,7 @@ const calculateSeparateItem = (basketItem, action) => {
             input.value--;
             break;
     }
-    update_count_book_in_cart(id)
+    update_count_book_in_cart_debounce(id)
 };
 
 
@@ -58,15 +121,12 @@ document.getElementById('basket').addEventListener('click', (event) => {
             calculateSeparateItem(event.target.closest('.basket-item'),
                 'minus');
             const b = event.target.closest('.basket-item').querySelector('.counter__input')
-            console.log(b);
-            console.log(b.dataset.id);
 
         }
     }
     if (event.target.classList.contains("counter__button_plus")) {
         calculateSeparateItem(event.target.closest('.basket-item'),
             'plus');
-        console.log(event.target.dataset.id);
     }
 })
 
@@ -78,9 +138,6 @@ function plural(number, titles) {
 
 function initCart() {
     $('.basket-item__btn-cart-del').on('click', delItem);
-
-    //    $('#quantityOfGoods').html(cart["count"] + ' ' + plural(Number(cart["count"]), ['товар', 'товара', 'товаров']));
-
 }
 
 function delItem() {
