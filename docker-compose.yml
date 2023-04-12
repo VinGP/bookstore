@@ -15,6 +15,7 @@ services:
     depends_on:
       - db
       - mailhog
+      - elasticsearch
   db:
     container_name: ${APP_NAME}-db
     image: postgres:14-alpine
@@ -48,8 +49,37 @@ services:
       - "5050:80"
     volumes:
       - pgadmin-data:/var/lib/pgadmin
+  elasticsearch:
+    image: elasticsearch:8.4.0
+    container_name: elasticsearch
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    ports:
+      - ${ES_PORT}:9200
+    restart: always
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+  kibana:
+    depends_on:
+      - elasticsearch
+    image: kibana:8.4.0
+    container_name: kibana
+    volumes:
+      - kibana-data:/usr/share/kibana/data
+    ports:
+     - ${KIBANA_PORT}:5601
+    restart: always
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
 
 
 volumes:
   postgres_data:
   pgadmin-data:
+  elasticsearch-data:
+  kibana-data:

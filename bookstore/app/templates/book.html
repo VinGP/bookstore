@@ -32,7 +32,7 @@
         <div class=" owl-carousel owl-theme" id="owl">
             <div>
                 <img class="d-block w-100 "
-                     src="{{ url_for('static', filename=book.image_path)  }}"
+                     src="{{ url_for('static', filename=book.image_path if book.image_path else 'image/book/default.svg')  }}"
                      alt="{{ book.title }}"
                      data-src="{{ url_for('static', filename=book.image_path if book.image_path else 'image/book/default.svg')  }}">
             </div>
@@ -128,7 +128,6 @@
                     {% endif %}
                     <tr>
                         <td style="color: grey">Издательство</td>
-                        {{ book.publisher.name }}
                         <td><a href="{{ url_for('publisher', id=book.publisher.id)  }}" class="book_info__link">{{ book.publisher.name }}</a></td>
                     </tr>
                 </table>

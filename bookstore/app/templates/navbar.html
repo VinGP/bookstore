@@ -12,19 +12,23 @@
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 {% for category in main_categorise() %}
-                    <li><a class="dropdown-item" href="{{ url_for('category_view', category_id=category.id) }}">{{ category.name }}</a></li>
+                <li><a class="dropdown-item"
+                       href="{{ url_for('category_view', category_id=category.id) }}">{{
+                    category.name }}</a></li>
                 {% endfor %}
             </ul>
         </div>
-        <form autocomplete="off" action="/search" method="GET" style="display: flex;
+        <form autocomplete="off" action="{{ url_for('search') }}" method="GET" style="display: flex;
     width: 100%;" class="navbar__search-form">
             <div class="autocomplete" style="">
                 <input id="searchInput" type="text" name="q"
-                       placeholder="Поиск книг, авторов"
-                       class="navbar__search-form-input">
+                       placeholder="Поиск по названию, автору, isbn..."
+                       class="navbar__search-form-input" value="{{ q }}" required>
             </div>
+
+
             <button class="navbar__search-form__btn" type="submit" id="searchBtn"><img
-                    class="search-icon"
+                    class="search-icon" name="submit"
                     src="{{ url_for('static', filename='image/icon/search.png') }}"
                     alt="Поиск"></button>
         </form>
@@ -48,7 +52,12 @@
                     <path
                             d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l1.25 5h8.22l1.25-5H3.14zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z"/>
                 </svg>
-                <span class="cart__counter" id="count">{{ count_books_in_cart() }}</span></a>
+                <span class="cart__counter"
+                      id="count">{{ count_books_in_cart() }}</span></a>
         </div>
     </div>
 </nav>
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/search.js') }}"></script>
+{% endblock %}
