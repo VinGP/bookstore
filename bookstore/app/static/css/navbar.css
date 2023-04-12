@@ -198,6 +198,7 @@ input[type="submit"] {
 
   .my-navbar {
     padding-left: 10px;
+    padding-right: 10px;
     flex-flow: wrap;
     padding-bottom: 20px;
     padding-top: 10px;

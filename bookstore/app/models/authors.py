@@ -18,7 +18,10 @@ class Author(SqlAlchemyBase):
     )
 
     def __repr__(self):
-        return f"{self.first_name} {self.second_name} {self.surname}"
+        return f"{self.first_name} {self.second_name}{' ' + self.surname if self.surname else ''}"
+
+    def __str__(self):
+        return f"{self.first_name} {self.second_name}{' ' + self.surname if self.surname else ''}"
 
 
 books_authors = sqlalchemy.Table(

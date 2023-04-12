@@ -1,0 +1,30 @@
+{% macro pagination(next_url, prev_url, current_page, end_page, first_page, page_url_maker) -%}
+<ul class="pagination">
+    {% if next_url or prev_url  %}
+        {% if prev_url %}<li class="page-item"><a class="page-link" href="{{ prev_url }}">Назад</a></li>{% endif %}
+        {% if current_page > 2 %}
+
+            <li class="page-item"><a class="page-link" href="{{ page_url_maker(1) }}">{{ 1 }}</a></li>
+        {% endif %}
+        {% if current_page > 3  %}
+            <li class="page-item"><a class="page-link"  tabindex="-1" aria-disabled="true">...</a></li>
+        {% endif %}
+        {% if current_page > 1 %}
+            <li class="page-item"><a class="page-link" href="{{ page_url_maker(current_page-1) }}">{{ current_page - 1 }}</a></li>
+       {% endif %}
+            <li class="page-item active"><a class="page-link" >{{ current_page }}</a></li>
+        {% if current_page + 2 <= end_page %}
+
+            <li class="page-item"><a class="page-link" href="{{  page_url_maker(current_page+1) }}">{{ current_page + 1}}</a></li>
+        {% endif %}
+        {% if  end_page - current_page > 2 %}
+            <li class="page-item"><a class="page-link"  tabindex="-1" aria-disabled="true">...</a></li>
+        {% endif %}
+        {% if current_page != end_page %}
+
+            <li class="page-item"><a class="page-link" href="{{ page_url_maker(end_page) }}">{{ end_page }}</a></li>
+        {% endif %}
+        {% if next_url %}<li class="page-item"><a class="page-link" href="{{ next_url }}">Вперёд</a></li>{% endif %}
+    {% endif %}
+</ul>
+{%- endmacro %}

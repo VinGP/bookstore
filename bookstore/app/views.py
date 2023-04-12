@@ -20,7 +20,17 @@ from flask_login import current_user, login_required
 from sqlalchemy_pagination import paginate
 
 from . import app, babel
+from .forms.search import SearchForm
 from .services.users import get_user_by_id
+
+# Book.reindex()
+
+
+def page_url_maker(endpoint, **kwargs):
+    def wrapper(page):
+        return url_for(endpoint=endpoint, **kwargs, page=page)
+
+    return wrapper
 
 
 def format_weight(n: int):
@@ -29,8 +39,11 @@ def format_weight(n: int):
 
 @app.context_processor
 def utility_processor():
+    search_form = SearchForm()
+
     def format_author(author: Author):
         return f"{author.first_name} {author.second_name[0]}.{' ' + author.surname[0] + '.' if author.surname else ''}"
+
     def get_authors_books(authors):
         res = []
         for author in authors:
@@ -39,6 +52,7 @@ def utility_processor():
         if len(res) > 1:
             return res
         return None
+
     def main_categorise():
         with db_session.create_session() as db_sess:
             return get_main_categorise(db_sess)
@@ -98,7 +112,8 @@ def utility_processor():
         count_book_in_cart=count_book_in_cart,
         count_books_in_cart=count_books_in_cart,
         cart_weight=cart_weight,
-        get_authors_books=get_authors_books
+        get_authors_books=get_authors_books,
+        search_form=search_form,
     )
 
 
@@ -193,6 +208,7 @@ def category_view(category_id):
             category_id=category_id,
             end_page=pagination.pages,
             title=category.name,
+            page_url_maker=page_url_maker("category_view", category_id=category_id),
         )
 
 
@@ -200,10 +216,12 @@ def category_view(category_id):
 def book(id):
     with db_session.create_session() as db_sess:
         book = db_sess.query(Book).filter(Book.id == id).first()
-
-        parent_categories = Category.get_parents_list(db_sess, book.categories[0].id)[
-            ::-1
-        ]
+        if book.categories:
+            parent_categories = Category.get_parents_list(
+                db_sess, book.categories[0].id
+            )[::-1]
+        else:
+            parent_categories = []
         return render_template(
             "book.html",
             book=book,
@@ -385,3 +403,68 @@ def confirm_mail_view(token):
             "mail/success_confirm_mail.html", title="Почта подтверждена", email=email
         )
     abort(404)
+
+
+@app.route("/search")
+def search():
+    q = request.args.get("q", None)
+    page = request.args.get("page", 1, type=int)
+    per_page = 24
+
+    # if form.validate_on_submit():
+    if q := q.strip():
+        # q = form.q.data
+        # res = db_sess.query(Book).filter(
+        #     Book.title.match(q) | Book.authors.any(
+        #         Author.second_name.match(q) | Author.first_name.match(
+        #             q)) | Book.publisher.has(Publisher.name.match(q))).all()
+        # res = db_sess.query(Book).filter(text("similarity(name, :search_term) > 0.5")).all()
+        # ). \
+        #         params(search_term=search_term). \
+        #             order_by(text("similarity(name, :search_term) DESC")). \
+        #             all()
+        # res = db_sess.query(Book).filter(
+        #     text("levenshtein(title, :search_term) < 10")). \
+        #     params(search_term=q). \
+        #     order_by(text("levenshtein(title, :search_term) DESC")). \
+        #     all()
+        books, total = Book.search(q, page, per_page)
+
+        url_maker = page_url_maker("search", q=q)
+
+        # pagination = paginate(books, page, per_page)
+
+        end_page = total // per_page + bool(total % per_page)
+
+        next_page = page + 1 if end_page > page else None
+
+        next_url = url_maker(next_page) if next_page else None
+        prev_url = url_maker(page - 1) if page > 1 else None
+
+        return render_template(
+            "search.html",
+            books=books,
+            total_count=total,
+            next_url=next_url,
+            prev_url=prev_url,
+            current_page=page,
+            end_page=end_page,
+            title=f"Поиск: {q}",
+            page_url_maker=url_maker,
+            q=q,
+        )
+
+    return render_template(
+        "search.html",
+        books=[],
+        title=f"Поиск: {q}",
+        q=q,
+    )
+
+
+@app.route("/autocomplete/<q>")
+def autocomplete(q=None):
+    res = []
+    if q:
+        res = Book.autocomplete(q, 1, 10)
+    return jsonify({"data": res})

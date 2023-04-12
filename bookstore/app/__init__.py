@@ -1,5 +1,6 @@
 import os
 
+from elasticsearch import Elasticsearch
 from flask import Flask
 from flask_babelex import Babel
 from flask_login import LoginManager
@@ -13,6 +14,12 @@ app.config.from_object(Config)
 # file_path = os.path(os.path.dirname(__name__))
 file_path = os.path.join(os.path.dirname(__file__), "static")
 db_session.global_init(app.config["SQLALCHEMY_DATABASE_URI"])
+
+app.elasticsearch = (
+    Elasticsearch([app.config["ELASTICSEARCH_URL"]])
+    if app.config["ELASTICSEARCH_URL"]
+    else None
+)
 
 login_manager = LoginManager(app)
 

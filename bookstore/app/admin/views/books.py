@@ -48,6 +48,11 @@ class BooksView(MyBaseView):
         "price",
         "publisher",
         "categories",
+        "year",
+        "number_of_pages",
+        "size",
+        "weight",
+        "series",
         "image_path",
     ]
 
@@ -72,11 +77,12 @@ class BooksView(MyBaseView):
         isbn="ISBN",
         image_path="Основная картинка",
         categories="Категория",
+        other_images="Другие картинки",
     )
 
     form_extra_fields = {
         "image_path": form.ImageUploadField(
-            "",
+            "Основная картинка",
             base_path=file_path,
             namegen=name_gen_image,
             allowed_extensions=["jpeg", "jpg", "png", "webp"],
