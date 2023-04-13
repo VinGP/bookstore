@@ -36,7 +36,7 @@ class Book(SearchableMixin, SqlAlchemyBase):
         "Category", secondary="books_categories", backref="books"
     )
 
-    authors = orm.relationship("Author", secondary="books_authors", lazy="selectin")
+    authors = orm.relationship("Author", secondary="books_authors", lazy="joined")
 
     year = sqlalchemy.Column(sqlalchemy.Integer)
     number_of_pages = sqlalchemy.Column(sqlalchemy.Integer)

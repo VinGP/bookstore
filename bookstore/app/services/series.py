@@ -15,3 +15,8 @@ def create_series(session, name: str, publisher: Publisher):
     session.add(series)
     session.commit()
     return series
+
+
+def get_series_by_id(session, id):
+    series = session.query(Series).get(id)
+    return series

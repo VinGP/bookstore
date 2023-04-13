@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% import 'book_tmp.html' as book_tmp with context %}
+{% import 'pagination_tmp.html' as pagination_tmp with context %}
+
+{% block content %}
+
+<div class="catalog-page">
+    <h1>{{ author }}</h1>
+    <p>Всего: {{ total_count }}</p>
+    <div class="row">
+    {% for book in books %}
+        {{ book_tmp.book(book, size=True) }}
+    {% endfor %}
+        </div>
+</div>
+{{ pagination_tmp.pagination(next_url, prev_url, current_page, end_page, first_page, page_url_maker) }}
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endblock %}

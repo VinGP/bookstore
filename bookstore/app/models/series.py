@@ -13,10 +13,7 @@ class Series(SqlAlchemyBase):
         sqlalchemy.Integer, sqlalchemy.ForeignKey("publishers.id"), nullable=False
     )
     publisher = orm.relationship("Publisher")
-    books = orm.relationship(
-        "Book",
-        secondary="books_series",
-    )
+    books = orm.relationship("Book", secondary="books_series", lazy="joined")
 
     def __repr__(self):
         return self.name

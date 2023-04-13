@@ -21,6 +21,8 @@ from sqlalchemy_pagination import paginate
 
 from . import app, babel
 from .forms.search import SearchForm
+from .services.publishers import get_publisher_by_id
+from .services.series import get_series_by_id
 from .services.users import get_user_by_id
 
 # Book.reindex()
@@ -163,7 +165,7 @@ def index():
 @app.route("/category/<int:category_id>")
 def category_view(category_id):
     page = request.args.get("page", 1, type=int)
-    per_page = 24
+    # per_page = 24
 
     with db_session.create_session() as db_sess:
         category = db_sess.query(Category).filter(Category.id == category_id).first()
@@ -180,7 +182,7 @@ def category_view(category_id):
             .order_by(Book.publication_date)
         )
 
-        pagination = paginate(books, page, per_page)
+        pagination = paginate(books, page, app.config["PER_PAGE"])
         next_url = (
             url_for("category_view", category_id=category_id, page=pagination.next_page)
             if pagination.has_next
@@ -232,25 +234,101 @@ def book(id):
 
 @app.route("/publisher/<int:id>")
 def publisher(id):
-    return f"publisher: {id}"
+    page = request.args.get("page", 1, type=int)
+    per_page = app.config["PER_PAGE"]
+    with db_session.create_session() as db_sess:
+        publisher = get_publisher_by_id(db_sess, id)
+        books = db_sess.query(Book).filter(Book.publisher_id == publisher.id)
+        total_count = books.count()
+        pg = paginate(books, page, per_page)
+        books = pg.items
+        page_url_maker_publisher = page_url_maker("publisher", id=publisher.id)
+
+        end_page = total_count // per_page + bool(total_count % per_page)
+
+        next_page = page + 1 if end_page > page else None
+
+        next_url = page_url_maker_publisher(next_page) if next_page else None
+        prev_url = page_url_maker_publisher(page - 1) if page > 1 else None
+        res = render_template(
+            "publisher.html",
+            books=books,
+            publisher=publisher,
+            total_count=total_count,
+            next_url=next_url,
+            prev_url=prev_url,
+            current_page=page,
+            end_page=end_page,
+            title=str(publisher),
+            page_url_maker=page_url_maker_publisher,
+        )
+        return res
 
 
 @app.route("/series/<int:id>")
 def series(id):
-    return "series"
+    with db_session.create_session() as db_sess:
+        page = request.args.get("page", 1, type=int)
+        per_page = app.config["PER_PAGE"]
+        series = get_series_by_id(db_sess, id)
+        books = series.books
+        total_count = len(books)
+
+        page_url_maker_series = page_url_maker("series", id=series.id)
+
+        end_page = total_count // per_page + bool(total_count % per_page)
+
+        next_page = page + 1 if end_page > page else None
+
+        next_url = page_url_maker_series(next_page) if next_page else None
+        prev_url = page_url_maker_series(page - 1) if page > 1 else None
+        res = render_template(
+            "series.html",
+            books=books,
+            series=series,
+            publisher=series.publisher,
+            total_count=total_count,
+            next_url=next_url,
+            prev_url=prev_url,
+            current_page=page,
+            end_page=end_page,
+            title=str(series),
+            page_url_maker=page_url_maker_series,
+        )
+        return res
 
 
 @app.route("/author/<int:id>")
 def author(id: int):
+    page = request.args.get("page", 1, type=int)
+    per_page = app.config["PER_PAGE"]
     with db_session.create_session() as db_sess:
         author = db_sess.query(Author).filter(Author.id == id).first()
-        res = {
-            "id": author.id,
-            "first_name": author.first_name,
-            "second_name": author.second_name,
-            "surname": author.surname,
-        }
-    return jsonify(dict(res=res))
+        books = author.books
+
+        total_count = len(books)
+
+        page_url_maker_author = page_url_maker("author", id=author.id)
+
+        end_page = total_count // per_page + bool(total_count % per_page)
+
+        next_page = page + 1 if end_page > page else None
+
+        next_url = page_url_maker_author(next_page) if next_page else None
+        prev_url = page_url_maker_author(page - 1) if page > 1 else None
+
+    return render_template(
+        "author.html",
+        books=books,
+        author=author,
+        total_count=total_count,
+        next_url=next_url,
+        prev_url=prev_url,
+        current_page=page,
+        end_page=end_page,
+        title=str(author),
+        page_url_maker=page_url_maker_author,
+    )
 
 
 @app.route("/mail/")
@@ -409,7 +487,7 @@ def confirm_mail_view(token):
 def search():
     q = request.args.get("q", None)
     page = request.args.get("page", 1, type=int)
-    per_page = 24
+    per_page = app.config["PER_PAGE"]
     if q := q.strip():
         books, total = Book.search(q, page, per_page)
 

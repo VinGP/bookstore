@@ -20,3 +20,5 @@ class Config(object):
     FLASK_ADMIN_TEMPLATE_MODE = "bootstrap4"
 
     ELASTICSEARCH_URL = "http://elasticsearch:9200"
+
+    PER_PAGE = 24

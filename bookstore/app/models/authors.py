@@ -12,10 +12,7 @@ class Author(SqlAlchemyBase):
     second_name = sqlalchemy.Column(sqlalchemy.String(128), nullable=False)
     surname = sqlalchemy.Column(sqlalchemy.String(128))
 
-    books = orm.relationship(
-        "Book",
-        secondary="books_authors",
-    )
+    books = orm.relationship("Book", secondary="books_authors", lazy="select")
 
     def __repr__(self):
         return f"{self.first_name} {self.second_name}{' ' + self.surname if self.surname else ''}"

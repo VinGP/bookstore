@@ -19,3 +19,8 @@ def create_publisher(name: str, address: str = None, phone: str = None):
         db_sess.add(publisher)
         db_sess.commit()
         return publisher
+
+
+def get_publisher_by_id(session, id: int):
+    publisher = session.query(Publisher).get(id)
+    return publisher
