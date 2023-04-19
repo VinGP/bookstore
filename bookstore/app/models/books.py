@@ -2,14 +2,13 @@ import os
 
 import sqlalchemy
 from app import file_path
+from app.models.authors import Author
+from app.models.db_session import SqlAlchemyBase
 from app.models.mixins import SearchableMixin
+from app.models.publishers import Publisher
+from app.search import add_to_index, remove_from_index
 from sqlalchemy import event, orm
 from sqlalchemy.event import listens_for
-
-from ..search import add_to_index, remove_from_index
-from .authors import Author
-from .db_session import SqlAlchemyBase
-from .publishers import Publisher
 
 
 class Book(SearchableMixin, SqlAlchemyBase):
@@ -81,7 +80,6 @@ def update_author(mapper, session, instance):
 
 @event.listens_for(Book, "after_update")
 def update_book(m, session, instance):
-    print(m, session, instance)
     add_to_index(instance.__tablename__, instance)
 
 

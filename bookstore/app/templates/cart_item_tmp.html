@@ -1,7 +1,7 @@
 {% macro cart_item(cart_book, book) -%}
 <div class="basket-item" data-id="{{ book.id }}" id="{{ book.id }}">
     <div class="basket-item__wrapper">
-        <a class="item-a" href="#">
+        <a class="item-a" href="{{ url_for('book', id=book.id) }}">
             <div class="img-wrapper">
                 <img class="item-img lazyload"
                      src="{{ url_for('static', filename='image/book/default.svg')  }}"

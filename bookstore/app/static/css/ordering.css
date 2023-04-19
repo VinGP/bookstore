@@ -1,0 +1,122 @@
+html {
+    /*width:100vw;*/
+    /*overflow-x:hidden;*/
+    min-height: 101vh;
+}
+
+
+body {
+    font-family: 'Open Sans', sans-serif !important;
+    margin: 0;
+    /*min-height: 105vh;*/
+    /*height: 10000px;*/
+}
+
+.ordering__title {
+    text-align: center;
+}
+
+.total-block {
+    min-height: 105px;
+    border: 1px solid #c7ccd7;
+    border-radius: 4px;
+    padding: 15px;
+    /* position: relative; */
+    overflow: hidden;
+    position: sticky;
+    top: 20px;
+    flex: 0 0 318px;
+    /* margin-left: 40px; */
+}
+
+.total-block__title {
+    font-size: 16px;
+    line-height: 24px;
+    margin: 0;
+    padding: 0;
+    color: #7d8290;
+}
+
+.total-block__item {
+    font-size: 16px;
+    line-height: 24px;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    margin-top: 8px;
+    color: #242424;
+}
+
+._total {
+    padding-top: 12px;
+    border-top: 1px solid #c7ccd7;
+    align-items: baseline;
+}
+
+.total-block__item._total .total-block__desc {
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 700;
+}
+
+.total-block__item._total .total-block__val {
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 600;
+}
+
+.delivery_method, .payment_method {
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+.delivery_method__name, .payment_method__name {
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.delivery_method__price {
+    font-size: 14px;
+    line-height: 24px;
+    color: #7d8290;
+}
+
+.ordering__group-title {
+    font-size: 20px;
+}
+
+.product__btn {
+    position: relative;
+    text-transform: none;
+    margin: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    text-align: center;
+    justify-content: center;
+    border-radius: 4px;
+    font-size: 19px;
+    overflow: hidden;
+    transition: opacity .3s, color .3s, background-color .3s, border-color .3s;
+    cursor: pointer;
+    font-family: inherit;
+    outline: 0;
+    text-decoration: none;
+    -webkit-appearance: button;
+    /* max-width: 160px; */
+    /*background-color: #fff;*/
+    background-color: #3d70b2;
+    color: #fff;
+
+    /*color: #242424;*/
+    /*border: 0;*/
+    /* height: 27px; */
+    line-height: 45px;
+    padding: initial;
+    font-weight: 500;
+    display: flex;
+    width: 100%;
+    border: 1px black solid;
+}
+.product__btn:hover{
+background-color: #4186df;
+}

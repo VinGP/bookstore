@@ -135,4 +135,9 @@ if __name__ == "__main__":
 # pg_dump -U hello_flask -p 54320 -d hello_flask_dev  -f ./d.sql
 # Запуск: python manage.py --env-file .env.dev run -h 0.0.0.0
 
-# docker-compose exec web python manage.py add_admin admin admin admin@admin admin
+# docker compose exec web python manage.py add_admin admin admin admin@admin admin
+
+
+# pg_dump -U postgres  -d bookstore-dev  -p 54320  -s > s.sql
+# # docker compose exec web python -m alembic upgrade head
+# # docker compose exec web python -m alembic revision --autogenerate

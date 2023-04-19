@@ -18,7 +18,7 @@ class Category(SqlAlchemyBase):
     )
 
     def __repr__(self):
-        if not self.parent:
+        if not self.parent or self.parent == self:
             return self.name
         return str(self.parent) + "->" + self.name
 

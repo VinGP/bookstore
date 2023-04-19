@@ -35,6 +35,7 @@ class User(SqlAlchemyBase, UserMixin):
         uselist=False,
         cascade="all, delete-orphan",
     )
+    order = orm.relationship("Order", cascade="all, delete-orphan")
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)

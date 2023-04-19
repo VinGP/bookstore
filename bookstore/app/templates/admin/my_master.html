@@ -2,6 +2,14 @@
 {% block head %}
     <link rel="icon" href="{{ url_for('static', filename='image/icon/favicon.png') }}">
 {% endblock %}
+
+{% block head_meta %}
+{{super()}}
+    <meta http-equiv='cache-control' content='no-cache'>
+    <meta http-equiv='expires' content='0'>
+    <meta http-equiv='pragma' content='no-cache'>
+{% endblock head_meta %}
+
 {% block access_control %}
 {% if current_user.is_authenticated %}
 <div class="dropdown show">

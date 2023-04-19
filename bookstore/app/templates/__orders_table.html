@@ -1,0 +1,20 @@
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">№ ЗАКАЗА</th>
+        <th scope="col">СУММА ЗАКАЗА</th>
+        <th scope="col">ДАТА ЗАКАЗА</th>
+        <th scope="col">СТАТУС</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for order in orders %}
+    <tr>
+        <th scope="row"><a href="{{ url_for('order', order_id=order.id) }}">{{ order.id }}</a></th>
+        <td>{{ order.get_order_sum() }} руб.</td>
+        <td>{{ moment(order.creation_date).format('LLL') }}</td>
+        <td>{{ order_state_to_text(order.state) }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+
+
+{% block content %}
+    <ul class="nav nav-tabs nav-fill" id="myTab" role="tablist">
+        <li class="nav-item " role="presentation">
+            <a class="nav-link active" href="{{ url_for('personal') }}">Профиль
+            </a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" href="{{ url_for('orders') }}">Заказы
+            </a>
+        </li>
+    </ul>
+        <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            {% include "__personal_form.html" %}
+        </div>
+    </div>
+
+
+{% endblock %}
+

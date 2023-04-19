@@ -1,0 +1,89 @@
+{#<h2 class="ordering__group-title">Контактные данные</h2>#}
+<div class="row mt-3">
+    <div class="col-sm-12">
+        <form action="{{ url_for('personal') }}" method="post">
+            {{ form.hidden_tag() }}
+            <!-- 2 column grid layout with text inputs for the first and last names -->
+
+            <!-- Text input -->
+<!--            <div class="row mb-4">-->
+                <div class="form-outline mb-4">
+                                    {{ form.name.label(class="form-label") }}
+
+                    {{ form.name(class="form-control") }}
+                {% for error in form.name.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+<!--                    -->
+<!--                    -->
+<!--                    <label class="form-label" for="fullname">Фамилия, имя и-->
+<!--                        отчество</label>-->
+<!--                    <input type="text" id="fullname" class="form-control"-->
+<!--                           name="fullname"/>-->
+                </div>
+<!--            </div>-->
+
+            <!-- Text input -->
+            <div class="form-outline mb-4">
+<!--                <label class="form-label" for="address">Адрес доставки</label>-->
+<!--                <input type="text" id="address" class="form-control" name="address"-->
+<!--                       value=""/>-->
+<!--                -->                {{ form.surname.label(class="form-label") }}
+
+                {{ form.surname(class="form-control") }}
+                {% for error in form.surname.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="row mb-4">
+                <div class="col">
+                    <!-- Email input -->
+                    <div class="form-outline mb-4">
+<!--                        <label class="form-label" for="email">Адрес электронной-->
+<!--                            почты</label>-->
+<!--                        <input type="email" id="email" class="form-control"-->
+<!--                               name="email"/>-->
+                {{ form.email.label(class="form-label") }}
+
+                        {{ form.email(class="form-control") }}
+                {% for error in form.email.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Number input -->
+                <div class="col">
+                    <div class="form-outline mb-4">
+<!--                        <label class="form-label" for="phone_number">Номер-->
+<!--                            телефона</label>-->
+<!--                        <input type="tel" id="phone_number" class="form-control"-->
+<!--                               name="phone_number"/>-->
+                {{ form.phone_number.label(class="form-label") }}
+
+                        {{ form.phone_number(class="form-control") }}
+                {% for error in form.phone_number.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {{ form.submit(type="submit", class="btn btn-primary mb-3") }}
+            {% if current_user.is_admin %}
+            <a href="/admin" class="btn btn-danger mb-3">Админ панель</a>
+            {% endif %}
+            <a href="/logout" class="btn btn-secondary mb-3">Выйти</a>
+
+        </form>
+    </div>
+</div>
+

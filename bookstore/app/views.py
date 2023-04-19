@@ -15,17 +15,28 @@ from app.services.carts import (
 )
 from app.services.catigories import get_main_categorise
 from app.services.mail import confirm_mail, send_confirm_mail
-from flask import abort, jsonify, redirect, render_template, request, session, url_for
+from flask import (
+    abort,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from flask_login import current_user, login_required
 from sqlalchemy_pagination import paginate
 
 from . import app, babel
 from .forms.search import SearchForm
+from .forms.user import OrderForm, UserForm
+from .models.orders import DeliveryMethod, Order, OrderPayment, OrderStateName
+from .services.orders import create_order
+from .services.payments import confirm_payment, create_payment
 from .services.publishers import get_publisher_by_id
 from .services.series import get_series_by_id
 from .services.users import get_user_by_id
-
-# Book.reindex()
 
 
 def page_url_maker(endpoint, **kwargs):
@@ -40,7 +51,7 @@ def format_weight(n: int):
 
 
 @app.context_processor
-def utility_processor():
+def utility_processor():  # noqa
     search_form = SearchForm()
 
     def format_author(author: Author):
@@ -78,9 +89,19 @@ def utility_processor():
                 return count[0]
             return 0
 
-    # def format_number(n: int | str):
-    #     import re
-    #     return re.sub(r"/\B(?<!\.\d)(?=(\d{3})+(?!\d))/g", " ", str(n))
+    def order_state_to_text(order_state):
+        print(order_state, type(order_state))
+        if isinstance(order_state, str):
+            return OrderStateName[order_state].value
+        else:
+            return OrderStateName[order_state.name].value
+
+    def format_date(date):
+        return date.strftime("%Y-%m-%d %H:%M")
+
+    def get_delivery_method_price(method):
+
+        return DeliveryMethod(method.data).value[1]
 
     def count_books_in_cart():
         if current_user.is_authenticated:
@@ -116,6 +137,9 @@ def utility_processor():
         cart_weight=cart_weight,
         get_authors_books=get_authors_books,
         search_form=search_form,
+        get_delivery_method_price=get_delivery_method_price,
+        order_state_to_text=order_state_to_text,
+        format_date=format_date,
     )
 
 
@@ -165,14 +189,11 @@ def index():
 @app.route("/category/<int:category_id>")
 def category_view(category_id):
     page = request.args.get("page", 1, type=int)
-    # per_page = 24
 
     with db_session.create_session() as db_sess:
         category = db_sess.query(Category).filter(Category.id == category_id).first()
 
         subcategories = Category.get_children_list(db_sess, category.id)
-
-        # parent_categories = Category.get_parents_list(db_sess, category.id)
 
         books = (
             db_sess.query(Book)
@@ -345,14 +366,131 @@ def test_mail():
     return jsonify({"res": True})
 
 
-@app.route("/personal")
+@app.route("/personal", methods=["POST", "GET"])
+@login_required
 def personal():
-    return "personal"
+    form = UserForm()
+    if form.validate_on_submit():
+        with db_session.create_session() as db_sess:
+            user = get_user_by_id(db_sess, current_user.id)
+            user.name = form.name.data
+            user.surname = form.surname.data
+            user.phone_number = (
+                form.phone_number.data if form.phone_number.data.strip() else None
+            )
+            db_sess.add(user)
+            db_sess.commit()
+        flash("Данные изменены", "success")
+    else:
+        form.name.data = current_user.name
+        form.phone_number.data = current_user.phone_number
+        form.surname.data = current_user.surname
+    form.email.data = current_user.email
+
+    return render_template("profile.html", title="Профиль", form=form)
 
 
-@app.route("/ordering")
+@app.route("/orders")
+def orders():
+    with db_session.create_session() as db_sess:
+        orders = (
+            db_sess.query(Order)
+            .filter(Order.user_id == current_user.id)
+            .order_by(Order.creation_date.desc())
+            .all()
+        )
+        return render_template("orders.html", title="Заказы", orders=orders)
+
+
+@app.route("/order/<int:order_id>")
+def order(order_id):
+    with db_session.create_session() as db_sess:
+        order = (
+            db_sess.query(Order)
+            .filter(Order.user_id == current_user.id, Order.id == order_id)
+            .first()
+        )
+
+        if order:
+            return render_template(
+                "order_details.html", order=order, title=f"Заказ №{order_id}"
+            )
+        return abort(404)
+
+
+@app.route("/api/pay/notifications", methods=["POST"])
+def confirm_pay():
+    if request.json["event"] == "payment.succeeded":
+        payment_id = request.json["object"]["id"]
+        with db_session.create_session() as db_sess:
+            confirm_payment(db_sess, payment_id)
+    return "Success", 200
+
+
+@app.route("/ordering", methods=["POST", "GET"])
 def ordering():
-    return "ordering"
+    form = OrderForm()
+
+    delivery_price = DeliveryMethod[form.delivery_method.default].value[1]
+    if not current_user.cart.books:
+        abort(404)
+    if form.validate_on_submit():
+
+        with db_session.create_session() as db_sess:
+
+            order = create_order(
+                db_sess,
+                current_user,
+                email=current_user.email,
+                name=form.name.data,
+                surname=form.surname.data,
+                patronymic=form.patronymic.data,
+                phone_number=form.phone_number.data,
+                delivery_price=DeliveryMethod[form.delivery_method.data].value[1],
+                delivery_method=DeliveryMethod[form.delivery_method.data],
+                region=form.region.data,
+                street=form.street.data,
+                city=form.city.data,
+                house=form.house.data,
+                flat=form.flat.data,
+                postcode=form.postal_code.data,
+                comment=form.order_comment.data,
+            )
+
+            confirmation_url = create_payment(
+                session=db_sess,
+                order_id=order.id,
+                amount=order.get_order_sum(),
+                description=f"Заказ №{order.id}",
+                return_url=url_for("order", order_id=order.id, _external=True),
+            )
+
+            if confirmation_url:
+                return redirect(confirmation_url)
+            return redirect(url_for("order", order_id=order.id))
+
+    form.name.data = current_user.name
+    form.surname.data = current_user.surname
+    form.email.data = current_user.email
+    form.phone_number.data = (
+        current_user.phone_number if current_user.phone_number else None
+    )
+    with db_session.create_session() as db_sess:
+        total_products_price = get_cart_total_price(db_sess, current_user.cart)
+        count_books_in_order = get_count_books_in_cart(db_sess, current_user.cart)
+        order_weight = format_weight(get_cart_weight(db_sess, current_user.cart))
+        total_order_price = total_products_price + delivery_price
+
+    return render_template(
+        "ordering.html",
+        form=form,
+        title="Оформление заказа",
+        total_products_price=total_products_price,
+        count_books_in_order=count_books_in_order,
+        order_weight=order_weight,
+        total_order_price=total_order_price,
+        delivery_price=delivery_price,
+    )
 
 
 @app.route("/cart")
@@ -365,7 +503,6 @@ def cart():
     return render_template("cart.html", books=books, title="Корзина")
 
 
-# login_required
 @app.route("/add", methods=["POST"])
 def add_to_cart():
     data = request.json
@@ -465,12 +602,6 @@ def recent_confirm_mail(id):
                 recent_mail_button=False,
             )
     return redirect(url_for("index"))
-
-
-@app.route("/t")
-def t():
-    abort(404)
-    return url_for("unconfirmed_mail", email="123")
 
 
 @app.route("/confirm_mail/<token>")

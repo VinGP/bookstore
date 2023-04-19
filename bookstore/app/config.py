@@ -6,6 +6,7 @@ env.read_env()
 
 class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = True
+
     SECRET_KEY = "SECRET_KEY"
     DATABASE_URL = f"postgresql://{env.str('DB_USER')}:{env.str('DB_PASSWORD')}@{env.str('DB_HOST')}:{env.str('DB_PORT')}/{env.str('DB_NAME')}"
     SQLALCHEMY_DATABASE_URI = DATABASE_URL
@@ -22,3 +23,6 @@ class Config(object):
     ELASTICSEARCH_URL = "http://elasticsearch:9200"
 
     PER_PAGE = 24
+
+    YOOKASSA_ACCOUNT_ID = env.str("YOOKASSA_ACCOUNT_ID", None)
+    YOOKASSA_SECRET_KEY = env.str("YOOKASSA_SECRET_KEY", None)

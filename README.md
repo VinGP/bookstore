@@ -30,7 +30,7 @@ cd bookstore
 #### 4) Поднимаем контейнер
 
 ```shell
-docker-compose up --build -d
+docker compose up --build -d
 ```
 
 или с помощью make
@@ -42,18 +42,18 @@ make dev
 #### 5) Применяем миграции
 
 ```shell
-docker-compose exec web python -m alembic upgrade head
+docker compose exec web python -m alembic upgrade head
 ```
 
 #### 6) Добавляем администратора
 ```shell
-docker-compose exec web python manage.py add_admin admin admin admin@admin admin
+docker compose exec web python manage.py add_admin admin admin admin@admin admin
 ```
 
 #### 7) Добавление данных в базу
 По желанию вы можете сразу заполнить базу данных. Файл data.json должен находиться рядом с файлом bookstore/manage.py, картинки необходимо поместить в папку bookstore/app/static/image/book/
 ```shell
-docker-compose exec web python manage.py insert_db_data
+docker compose exec web python manage.py insert_db_data
 ```
 
 #### Для разработки:
@@ -100,14 +100,14 @@ cd bookstore
 #### 3) Редактируем файлы
 
 1. переименовываем файл *.env.prod.example* -> *.env*
-2. удаляем файл *docker-compose.yml*
-3. переименовываем файл *docker-compose.prod.yml* -> *docker-compose.yml*
+2. удаляем файл *docker compose.yml*
+3. переименовываем файл *docker compose.prod.yml* -> *docker compose.yml*
 4. Редактируем переменные в файле *.env*
 
 #### 4) Поднимаем контейнер
 
 ```shell
-docker-compose up --build -d
+docker compose up --build -d
 ```
 
 или с помощью make
@@ -119,7 +119,7 @@ make up
 #### 5) Применяем миграции
 
 ```shell
-docker-compose exec web python -m alembic upgrade head
+docker compose exec web python -m alembic upgrade head
 ```
 
 ### Запуск проекта на сервере c SSL сертификатом:
@@ -143,8 +143,8 @@ cd bookstore
 #### 3) Редактируем файлы
 
 1. переименовываем файл *.env.prod.ssl.example* -> *.env*
-2. удаляем файл *docker-compose.yml*
-3. переименовываем файл *docker-compose.prod.ssl.yml* -> *docker-compose.yml*
+2. удаляем файл *docker compose.yml*
+3. переименовываем файл *docker compose.prod.ssl.yml* -> *docker compose.yml*
 4. Редактируем переменные в файле *.env*
     - DOMAIN - ваш домен (example.org)
     - DOMAIN_WWW - домен третьего уровня (www.example.org)
@@ -159,11 +159,11 @@ bash init-letsencrypt.sh
 #### 5) Поднимаем контейнер
 
 ```shell
-docker-compose up --build -d
+docker compose up --build -d
 ```
 
 #### 6) Применяем миграции
 
 ```shell
-docker-compose exec web python -m alembic upgrade head
+docker compose exec web python -m alembic upgrade head
 ```

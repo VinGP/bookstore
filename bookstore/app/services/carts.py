@@ -48,13 +48,17 @@ def get_cart_total_price(session, cart: Cart):
 
 
 def get_count_books_in_cart(session, cart: Cart):
-    count = (
-        session.query(CartBook)
+    count = 0
+    cart = (
+        session.query(Cart)
         .filter(
-            CartBook.cart_id == cart.id,
+            Cart.id == cart.id,
         )
-        .count()
+        .first()
     )
+
+    for cart_book in cart.books:
+        count += cart_book.count
     return count
 
 

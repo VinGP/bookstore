@@ -1,3 +1,6 @@
+let touchEvent = 'ontouchstart' in window ? 'touchstart' : 'click';
+
+
 function update_cart_counter() {
     $.ajax({
         type: 'post',
@@ -53,9 +56,6 @@ function addToCart() {
 
 }
 
-
 $(document).ready(function () {
-
-    $('.js-product__btn').on('click', addToCart)
-
+    $('.js-product__btn').on('click touchstart onfocus', addToCart)
 });

@@ -16,7 +16,8 @@
 
     <script src="{{ url_for('static', filename='js/jquery/jquery-3.6.4.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/lazysizes.min.js') }}" async=""></script>
-
+    {{ moment.include_moment() }}
+    {{ moment.lang('ru') }}
     {% block stylesheet %}{% endblock %}
     {% block scripts_head %}{% endblock %}
     <title>{{ title }} | Book Store</title>

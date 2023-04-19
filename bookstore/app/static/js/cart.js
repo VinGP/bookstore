@@ -83,6 +83,7 @@ function update_count_book_in_cart(id) {
         contentType: 'application/json',
         data: JSON.stringify({ "id": id, "count": $(`#${id}`).find(".counter__input").val() }),
         success: function (data) {
+            update_cart_counter()
             if (data.success === true) {
                 $(`#${data['id']}`).find(".counter__input").val(data.count);
                 $(`#${data['id']}`).find(".subtotal").text(data.total_price_book + " руб.")
@@ -112,7 +113,18 @@ const calculateSeparateItem = (basketItem, action) => {
 };
 
 
-document.getElementById('basket').addEventListener('click', (event) => {
+//document.getElementById('basket').addEventListener
+
+
+function plural(number, titles) {
+    let cases = [2, 0, 1, 1, 1, 2];
+    return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
+}
+
+
+function initCart() {
+    $('.basket-item__btn-cart-del').on('click', delItem);
+    $('#basket').on('click', (event) => {
 
     if (event.target.classList.contains("counter__button_minus")) {
         const input = event.target.closest('.basket-item').querySelector('.counter__input');
@@ -129,15 +141,6 @@ document.getElementById('basket').addEventListener('click', (event) => {
             'plus');
     }
 })
-
-function plural(number, titles) {
-    let cases = [2, 0, 1, 1, 1, 2];
-    return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
-}
-
-
-function initCart() {
-    $('.basket-item__btn-cart-del').on('click', delItem);
 }
 
 function delItem() {
