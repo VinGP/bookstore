@@ -1,0 +1,272 @@
+{% extends 'base.html' %}
+
+{% block stylesheet %}
+<!--    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">-->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ordering.css') }}">
+{% endblock %}
+
+
+
+{% block scripts_head %}
+<script src="{{ url_for('static', filename='js/ordering.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+
+<h1 class="ordering__title" xmlns="http://www.w3.org/1999/html">Оформление заказа</h1>
+<!--<h2 class="ordering__group-title">Контактные данные</h2>-->
+<h4>Контактные данные</h4>
+<script src="https://cdn.jsdelivr.net/npm/suggestions-jquery@latest/dist/js/jquery.suggestions.min.js"></script>
+
+<form action="{{ url_for('ordering') }}" method="post" onSubmit="document.getElementById('submit').disabled=true;">
+    {{ form.hidden_tag() }}
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="form-outline mb-4">
+                {{ form.surname.label(class="form-label") }}
+                {{ form.surname(class="form-control") }}
+                {% for error in form.surname.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="form-outline mb-4">
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control") }}
+                {% for error in form.name.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="form-outline mb-4">
+                {{ form.patronymic.label(class="form-label") }}
+                {{ form.patronymic(class="form-control") }}
+                {% for error in form.patronymic.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="form-outline mb-4">
+                {{ form.email.label(class="form-label") }}
+                {{ form.email(class="form-control") }}
+                {% for error in form.email.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+            </div>
+
+
+            <div class="form-outline mb-4">
+                {{ form.phone_number.label(class="form-label") }}
+                {{ form.phone_number(class="form-control") }}
+                {% for error in form.phone_number.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+            </div>
+
+            <h4>Доставка</h4>
+
+
+            <div class="form-outline mb-4">
+                {{ form.region.label(class="form-label") }}
+                {{ form.region(class="form-control") }}
+                {% for error in form.region.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="form-outline mb-4">
+                {{ form.city.label(class="form-label") }}
+                {{ form.city(class="form-control") }}
+                {% for error in form.city.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="form-outline mb-4">
+                {{ form.street.label(class="form-label") }}
+                {{ form.street(class="form-control") }}
+                {% for error in form.street.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="form-outline mb-4">
+                {{ form.house.label(class="form-label") }}
+                {{ form.house(class="form-control") }}
+                {% for error in form.house.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="form-outline mb-4">
+                {{ form.flat.label(class="form-label") }}
+                {{ form.flat(class="form-control") }}
+                {% for error in form.flat.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="form-outline mb-4">
+                {{ form.postal_code.label(class="form-label") }}
+                {{ form.postal_code(class="form-control") }}
+                {% for error in form.postal_code.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="form-outline mb-4">
+                <h4>Способ доставки</h4>
+                <table>
+                    {% for method in form.delivery_method %}
+                    <tr>
+                        <td>{{ method(price=get_delivery_method_price(method), class="delivery_method") }}</td>
+                        <td>{{ method.label }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="form-outline mb-4">
+                <h4>Способ оплаты</h4>
+                <table>
+                    {% for method in form.payment_method %}
+                    <tr>
+                        <td>{{ method }}</td>
+                        <td>{{ method.label }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <div class="form-outline mb-4">
+                {{ form.order_comment.label(class="form-label") }}
+                {{ form.order_comment(class="form-control") }}
+                {% for error in form.order_comment.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <div class="total-block">
+                <div class="total-block__title">Количество товаров: {{ count_books_in_order }} • {{ order_weight }} кг</div>
+                <div class="total-block__item">
+                    <div class="total-block__desc"> Стоимость товаров</div>
+                    <div class="total-block__val"><span id="total_products_price">{{ total_products_price }}</span> р.</div>
+                </div>
+                <div class="total-block__item">
+                    <div class="total-block__desc"> Стоимость доставки</div>
+                    <div class="total-block__val"> <span id="delivery_price">{{ delivery_price }}</span> р.</div>
+                </div>
+                <div class="total-block__item _total">
+                    <div class="total-block__desc"> Итого с учётом доставки</div>
+                    <div class="total-block__val"><span id="total_order_price">{{ total_order_price }}</span> р.</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="form-outline mb-4">
+        <div class="product__btn-holder">
+            {{ form.submit(type="submit", class="btn btn-primary mb-3") }}
+        </div>
+    </div>
+
+
+</form>
+<!--</div>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/suggestions-jquery@21.12.0/dist/css/suggestions.min.css"
+      rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/suggestions-jquery@21.12.0/dist/js/jquery.suggestions.min.js"></script>
+
+<script>
+var token = "6e48858f6c9513ff5c3feaaa8d53cb8d414505c1"
+
+var type = "ADDRESS";
+var $region = $("#region");
+var $city = $("#city");
+var $street = $("#street");
+var $house = $("#house");
+
+function showPostalCode(suggestion) {
+  $("#postal_code").val(suggestion.data.postal_code);
+}
+
+function clearPostalCode() {
+  $("#postal_code").val("");
+}
+
+// регион
+$region.suggestions({
+  token: token,
+  type: type,
+  hint: false,
+  bounds: "region"
+});
+
+
+
+// город и населенный пункт
+$city.suggestions({
+  token: token,
+  type: type,
+  hint: false,
+  bounds: "city",
+  constraints: $region,
+  onSelect: showPostalCode,
+  onSelectNothing: clearPostalCode
+});
+
+// geolocateCity($city);
+
+
+// улица
+$street.suggestions({
+  token: token,
+  type: type,
+  hint: false,
+  bounds: "street",
+  constraints: $city,
+  onSelect: showPostalCode,
+  onSelectNothing: clearPostalCode
+});
+
+// дом
+$house.suggestions({
+  token: token,
+  type: type,
+  hint: false,
+  bounds: "house",
+  constraints: $street,
+  onSelect: showPostalCode,
+  onSelectNothing: clearPostalCode
+});
+
+
+</script>
+<!--</div>-->
+{% endblock %}

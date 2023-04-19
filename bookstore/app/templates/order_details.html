@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<h2>Заказа № {{ order.id }}</h2>
+<br>
+<h3>Информация о заказе</h3>
+<table class="table">
+    <tr>
+        <td>Дата оформления</td>
+        <td>{{ moment(order.creation_date).format('LLL') }}</td>
+    </tr>
+    <tr>
+        <td>Статус</td>
+        <td>{{ order_state_to_text(order.state) }}</td>
+    </tr>
+    <tr>
+        <td>Сумма</td>
+        <td>{{ order.get_order_sum() }} р.</td>
+    </tr>
+    <tr>
+        <td>Способ доставки</td>
+        <td>{{ order.delivery.delivery_method.value[0] }}</td>
+    </tr>
+    <tr>
+        <td>Адрес доставки</td>
+        <td>{{ order.delivery.region }}, {{ order.delivery.city }}, {{ order.delivery.street }}, {{ order.delivery.house }}{% if order.delivery.flat %}, {{ order.delivery.flat }}{% endif %}</td>
+    </tr>
+    <tr>
+        <td>Получатель</td>
+        <td>{{ order.personal_data.surname }} {{ order.personal_data.name }} {{ order.personal_data.patronymic }}</td>
+    </tr>
+    <tr>
+        <td>Email</td>
+        <td>{{ order.personal_data.email }}</td>
+    </tr>
+    <tr>
+        <td>Номер телефона</td>
+        <td>{{ order.personal_data.phone_number }}</td>
+    </tr>
+
+
+
+</table>
+<br>
+
+<h3>Состав заказа</h3>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">Название</th>
+        <th scope="col">Кол-во</th>
+        <th scope="col">Стоимость</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for order_product in order.products %}
+    <tr>
+        <td>{{ order_product.book.title }}</td>
+        <td>{{ order_product.quantity }}</td>
+        <td>{{ order_product.quantity * order_product.price }} р.</td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td scope="row">Доставка</td>
+        <td></td>
+        <td>{{ order.delivery.delivery_price }} р.</td>
+    </tr>
+    <tr>
+        <td></td>
+        <th scope="row">Итого:</th>
+        <td>{{ order.get_order_sum() }} р.</td>
+    </tr>
+    </tbody>
+</table>
+{% endblock %}
