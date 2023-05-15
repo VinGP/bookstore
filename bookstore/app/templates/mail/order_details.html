@@ -15,7 +15,7 @@
     {% for order_product in order.products %}
     <tr>
         <td>{{ loop.index }}</td>
-        <td><a href="{{ url_for('book', id=order_product.book.id) }}">{{
+        <td><a href="{{ url_for('book', id=order_product.book.id, _external=True) }}">{{
             order_product.book.title }}</a></td>
         <td>{{ order_product.quantity }}</td>
         <td>{{ order_product.quantity * order_product.price }} р.</td>

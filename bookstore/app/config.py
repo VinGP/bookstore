@@ -26,3 +26,6 @@ class Config(object):
 
     YOOKASSA_ACCOUNT_ID = env.str("YOOKASSA_ACCOUNT_ID", None)
     YOOKASSA_SECRET_KEY = env.str("YOOKASSA_SECRET_KEY", None)
+
+    DADATA_SECRET_KEY = env.str("DADATA_SECRET_KEY", None)
+    DADATA_API_KEY = env.str("DADATA_API_KEY", None)

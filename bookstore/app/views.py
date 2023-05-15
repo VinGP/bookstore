@@ -61,7 +61,6 @@ def utility_processor():  # noqa
         res = []
         for author in authors:
             res += author.books[:10]
-        print(res)
         if len(res) > 1:
             return res[:15]
         return None
@@ -90,7 +89,6 @@ def utility_processor():  # noqa
             return 0
 
     def order_state_to_text(order_state):
-        print(order_state, type(order_state))
         if isinstance(order_state, str):
             return OrderStateName[order_state].value
         else:
@@ -127,6 +125,9 @@ def utility_processor():  # noqa
             weight = format_weight(get_cart_weight(db_sess, current_user.cart))
             return weight
 
+    def get_dadata_token():
+        return app.config["DADATA_API_KEY"]
+
     return dict(
         format_author=format_author,
         main_categorise=main_categorise,
@@ -140,6 +141,7 @@ def utility_processor():  # noqa
         get_delivery_method_price=get_delivery_method_price,
         order_state_to_text=order_state_to_text,
         format_date=format_date,
+        get_dadata_token=get_dadata_token,
     )
 
 
@@ -239,6 +241,9 @@ def category_view(category_id):
 def book(id):
     with db_session.create_session() as db_sess:
         book = db_sess.query(Book).filter(Book.id == id).first()
+        if not book:
+            abort(404)
+            return
         if book.categories:
             parent_categories = Category.get_parents_list(
                 db_sess, book.categories[0].id
@@ -352,20 +357,6 @@ def author(id: int):
     )
 
 
-@app.route("/mail/")
-def test_mail():
-    from app.mail import send_email
-
-    send_email(
-        "Заказ | BookStore",
-        f"Test Book Store <{app.config['MAIL_USERNAME']}>",
-        ["ivan.voronin.25@mail.ru"],
-        render_template("mail/test.txt"),
-        render_template("mail/test.html"),
-    )
-    return jsonify({"res": True})
-
-
 @app.route("/personal", methods=["POST", "GET"])
 @login_required
 def personal():
@@ -391,6 +382,7 @@ def personal():
 
 
 @app.route("/orders")
+@login_required
 def orders():
     with db_session.create_session() as db_sess:
         orders = (
@@ -403,6 +395,7 @@ def orders():
 
 
 @app.route("/order/<int:order_id>")
+@login_required
 def order(order_id):
     with db_session.create_session() as db_sess:
         order = (
@@ -428,6 +421,7 @@ def confirm_pay():
 
 
 @app.route("/ordering", methods=["POST", "GET"])
+@login_required
 def ordering():
     form = OrderForm()
 
